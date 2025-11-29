@@ -13,10 +13,11 @@
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.4.0",
+    "@react-three/fiber": "catalog:",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "three": "catalog:"
+    "three": "catalog:",
+    "@timjen/playwright-three": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

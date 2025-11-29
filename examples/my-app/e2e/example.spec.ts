@@ -1,4 +1,4 @@
-import { expect, test } from "./expect";
+import { expect, test } from "@timjen/playwright-three";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("");

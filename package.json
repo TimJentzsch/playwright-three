@@ -1,8 +1,9 @@
 {
-  "name": "playwright-three",
+  "name": "@timjen/playwright-three",
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "main": "src/index.ts",
   "scripts": {
     "build": "vite build",
     "dev": "vite"
@@ -14,6 +15,7 @@
   "devDependencies": {
     "@playwright/test": "catalog:",
     "@types/three": "catalog:",
+    "@react-three/fiber": "catalog:",
     "three": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"
