@@ -7,8 +7,15 @@
     "build": "vite build",
     "dev": "vite"
   },
+  "peerDependencies": {
+    "@playwright/test": "*",
+    "three": "*"
+  },
   "devDependencies": {
-    "typescript": "~5.9.3",
-    "vite": "^7.2.4"
+    "@playwright/test": "catalog:",
+    "@types/three": "catalog:",
+    "three": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
   }
 }
