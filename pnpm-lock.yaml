@@ -24,6 +24,24 @@ catalogs:
 
 importers:
 
+  .:
+    devDependencies:
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.57.0
+      '@types/three':
+        specifier: 'catalog:'
+        version: 0.181.0
+      three:
+        specifier: 'catalog:'
+        version: 0.181.2
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vite:
+        specifier: 'catalog:'
+        version: 7.2.4(@types/node@24.10.1)
+
   examples/my-app:
     dependencies:
       '@react-three/drei':
@@ -75,24 +93,6 @@ importers:
       typescript-eslint:
         specifier: ^8.46.4
         version: 8.48.0(eslint@9.39.1)(typescript@5.9.3)
-      vite:
-        specifier: 'catalog:'
-        version: 7.2.4(@types/node@24.10.1)
-
-  packages/playwright-three:
-    devDependencies:
-      '@playwright/test':
-        specifier: 'catalog:'
-        version: 1.57.0
-      '@types/three':
-        specifier: 'catalog:'
-        version: 0.181.0
-      three:
-        specifier: 'catalog:'
-        version: 0.181.2
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
       vite:
         specifier: 'catalog:'
         version: 7.2.4(@types/node@24.10.1)
