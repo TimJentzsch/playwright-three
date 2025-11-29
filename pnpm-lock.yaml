@@ -7,7 +7,7 @@ settings:
 catalogs:
   default:
     '@playwright/test':
-      specifier: ^1.57.0
+      specifier: 1.57.0
       version: 1.57.0
     '@types/three':
       specifier: ^0.181.0
@@ -63,6 +63,9 @@ importers:
       '@eslint/js':
         specifier: ^9.39.1
         version: 9.39.1
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.57.0
       '@types/node':
         specifier: ^24.10.1
         version: 24.10.1

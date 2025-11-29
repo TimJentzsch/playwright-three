@@ -1,23 +1,12 @@
-import { Canvas, useThree, type RootState } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { useEffect } from 'react';
-
-declare global {
-  interface Window {
-    PLAYWRIGHT_THREE?: RootState;
-  }
-}
-
+import { ExposeThree } from './ExposeThree';
 
 export default function Scene() {
-  const state = useThree();
-
-  useEffect(() => {
-    globalThis.window.PLAYWRIGHT_THREE = state;
-  }, [state]);
 
   return (
     <Canvas>
+      <ExposeThree />
       <ambientLight intensity={0.5} />
       <mesh>
         <boxGeometry />
