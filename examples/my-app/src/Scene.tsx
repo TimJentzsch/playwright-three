@@ -8,7 +8,7 @@ export default function Scene() {
     <Canvas>
       <ExposeThree />
       <ambientLight intensity={0.5} />
-      <mesh>
+      <mesh name="box">
         <boxGeometry />
         <meshStandardMaterial color="orange" />
       </mesh>
