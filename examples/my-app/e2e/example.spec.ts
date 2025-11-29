@@ -1,4 +1,3 @@
-import { Object3D } from "three";
 import { expect, test } from "./expect";
 
 test.beforeEach(async ({ page }) => {
@@ -14,24 +13,10 @@ test("has camera", async ({ threeHandle }) => {
   expect(cameraId).not.toBeUndefined();
 });
 
-test("has mesh", async ({ threeHandle }) => {
-  const objects = await threeHandle.evaluate((state) => {
-    const objects: Object3D[] = [];
-    state.scene.traverse((obj) => {
-      if (obj.type === "Mesh") {
-        objects.push(obj);
-      }
-    });
-    return objects;
-  });
-
-  expect(objects).toHaveLength(1);
+test("has mesh", async ({ scene }) => {
+  await expect(scene.getByType("Mesh")).toBeVisibleInScene();
 });
 
-test("has box", async ({ threeHandle }) => {
-  const box = await threeHandle.evaluate((state) => {
-    return state.scene.getObjectByName("box");
-  });
-
-  expect(box).toBeDefined();
+test("has box", async ({ scene }) => {
+  await expect(scene.getByName("box")).toBeVisibleInScene();
 });
