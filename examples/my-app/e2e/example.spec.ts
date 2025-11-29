@@ -20,3 +20,7 @@ test("has mesh", async ({ scene }) => {
 test("has box", async ({ scene }) => {
   await expect(scene.getByName("box")).toBeVisibleInScene();
 });
+
+test("has 20 points", async ({ scene }) => {
+  await expect(scene.getByType("Point")).toHaveCountInScene(20);
+});

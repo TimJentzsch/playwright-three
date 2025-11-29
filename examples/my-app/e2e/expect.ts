@@ -64,4 +64,26 @@ export const expect = baseExpect.extend({
         `Expected object "${object.name}" not to be visible in scene, but it is.`,
     };
   },
+
+  async toHaveCountInScene(
+    locator: ThreeLocator,
+    expectedCount: number
+  ): Promise<MatcherReturnType> {
+    const objects = await locator.evaluateAll();
+    const actualCount = objects.length;
+
+    if (actualCount !== expectedCount) {
+      return {
+        pass: false,
+        message: () =>
+          `Expected to find ${expectedCount} objects in scene, but found ${actualCount}.`,
+      };
+    }
+
+    return {
+      pass: true,
+      message: () =>
+        `Expected not to find ${expectedCount} objects in scene, but found ${actualCount}.`,
+    };
+  },
 });

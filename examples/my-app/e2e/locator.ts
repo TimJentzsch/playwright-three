@@ -22,15 +22,18 @@ export class ThreeLocator {
   }
 
   async evaluateAll(): Promise<Object3D[]> {
-    return await this.threeHandle.evaluate((three) => {
-      const results: Object3D[] = [];
-      three.scene.traverse((obj) => {
-        if (this.name !== undefined && obj.name !== this.name) return;
-        if (this.type !== undefined && obj.type !== this.type) return;
-        results.push(obj);
-      });
-      return results;
-    });
+    return await this.threeHandle.evaluate(
+      (three, { name, type }) => {
+        const results: Object3D[] = [];
+        three.scene.traverse((obj) => {
+          if (name !== undefined && obj.name !== name) return;
+          if (type !== undefined && obj.type !== type) return;
+          results.push(obj);
+        });
+        return results;
+      },
+      { name: this.name, type: this.type }
+    );
   }
 
   async evaluate(): Promise<Object3D | undefined> {
