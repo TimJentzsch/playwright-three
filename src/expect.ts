@@ -95,6 +95,7 @@ async function repeatUntil<T>(
     onReturnChange(conditionResult);
     if (conditionResult.pass) return;
 
+    console.debug("Condition not met, retrying...");
     await sleep(delay);
   }
 }

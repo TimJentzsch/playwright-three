@@ -1,12 +1,10 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { Vector3Tuple } from "three";
 
-export function ManyPoints(): ReactNode {
-  return <Points count={30} />;
-}
+export function Points({ count }: { count: number }): ReactNode {
+  const [positions, setPositions] = useState<Vector3Tuple[]>([]);
 
-function Points({ count }: { count: number }): ReactNode {
-  const [positions] = useState(() => {
+  useEffect(() => {
     const positions: Vector3Tuple[] = Array.from({ length: count });
 
     for (let i = 0; i < count; i++) {
@@ -17,8 +15,8 @@ function Points({ count }: { count: number }): ReactNode {
       ];
     }
 
-    return positions;
-  });
+    setPositions(positions);
+  }, [count]);
 
   return (
     <>
