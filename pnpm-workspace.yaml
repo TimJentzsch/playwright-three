@@ -1,9 +1,9 @@
 packages:
-  - examples/*
+  - examples
 
 catalog:
-  '@playwright/test': 1.57.0
-  '@types/three': ^0.181.0
+  "@playwright/test": 1.57.0
+  "@types/three": ^0.181.0
   three: ^0.181.2
   "@react-three/fiber": ^9.4.0
   typescript: ~5.9.3
