@@ -13,10 +13,11 @@
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "catalog:",
+    "@timjen/playwright-three": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "three": "catalog:",
-    "@timjen/playwright-three": "workspace:*"
+    "react-router": "^7.9.6",
+    "three": "catalog:"
   },
   "devDependencies": {
     "@playwright/test": "catalog:",
