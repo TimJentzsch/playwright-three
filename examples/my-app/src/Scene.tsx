@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { ManyPoints } from "./scenes/ManyPoints";
 import { Box } from "./scenes/Box";
 import { LoadingPoints } from "./scenes/LoadingPoints";
+import { UserData } from "./scenes/UserData";
 
 export default function Scene() {
   return (
@@ -20,6 +21,7 @@ export default function Scene() {
           <Route path="box" element={<Box />} />
           <Route path="manyPoints" element={<ManyPoints />} />
           <Route path="loadingPoints" element={<LoadingPoints />} />
+          <Route path="userData" element={<UserData />} />
         </Routes>
       </BrowserRouter>
     </Canvas>
