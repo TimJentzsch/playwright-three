@@ -8,12 +8,11 @@ declare global {
 }
 
 export function ExposeThree(): null {
-
   const state = useThree();
 
   useEffect(() => {
     globalThis.window.PLAYWRIGHT_THREE = state;
   }, [state]);
-  
+
   return null;
 }

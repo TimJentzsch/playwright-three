@@ -32,7 +32,7 @@ export class ThreeLocator {
         });
         return results;
       },
-      { name: this.name, type: this.type }
+      { name: this.name, type: this.type },
     );
   }
 

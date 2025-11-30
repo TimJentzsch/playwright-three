@@ -18,21 +18,19 @@ export const expect = baseExpect.extend({
     if (!isVisible) {
       return {
         pass: false,
-        message: () =>
-          `Expected object "${object.name}" to be visible in scene, but it is not.`,
+        message: () => `Expected object "${object.name}" to be visible in scene, but it is not.`,
       };
     }
 
     return {
       pass: true,
-      message: () =>
-        `Expected object "${object.name}" not to be visible in scene, but it is.`,
+      message: () => `Expected object "${object.name}" not to be visible in scene, but it is.`,
     };
   },
 
   async toHaveCountInScene(
     locator: ThreeLocator,
-    expectedCount: number
+    expectedCount: number,
   ): Promise<MatcherReturnType> {
     const objects = await locator.evaluateAll();
     const actualCount = objects.length;

@@ -14,11 +14,9 @@ type ThreeFixtures = {
 
 export const test = base.extend<ThreeFixtures>({
   threeHandle: async ({ page }, use) => {
-    await page.waitForFunction(
-      () => (window as ThreeWindow).PLAYWRIGHT_THREE !== undefined
-    );
+    await page.waitForFunction(() => (window as ThreeWindow).PLAYWRIGHT_THREE !== undefined);
     const threeHandle = await page.evaluateHandle<RootState>(
-      (): RootState => (window as ThreeWindow).PLAYWRIGHT_THREE as RootState
+      (): RootState => (window as ThreeWindow).PLAYWRIGHT_THREE as RootState,
     );
 
     await use(threeHandle);
