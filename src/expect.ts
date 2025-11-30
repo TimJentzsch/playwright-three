@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { expect as baseExpect, MatcherReturnType } from "@playwright/test";
 import { ThreeLocator } from "./locator";
-import { Object3D } from "three";
+import { filtered, ObjectGenerator } from "./objectGenerators";
 
 export const expect = baseExpect.extend({
   async toBeVisibleInScene(locator: ThreeLocator): Promise<MatcherReturnType> {
     return waitForObjects(locator, (objects) => {
-      const visibleObjects = objects.filter((obj) => obj.visible);
+      const visibleObjects = [...filtered(objects, (obj) => obj.visible)];
       if (visibleObjects.length > 0) {
         return {
           pass: true,
@@ -28,7 +28,7 @@ export const expect = baseExpect.extend({
     expectedCount: number
   ): Promise<MatcherReturnType> {
     return waitForObjects(locator, (objects) => {
-      const actualCount = objects.length;
+      const actualCount = [...objects].length;
 
       if (actualCount === expectedCount) {
         return {
@@ -49,7 +49,7 @@ export const expect = baseExpect.extend({
 
 async function waitForObjects(
   locator: ThreeLocator,
-  condition: (objects: Object3D[]) => MatcherReturnType,
+  condition: (objects: ObjectGenerator) => MatcherReturnType,
   timeout: number = 5_000
 ): Promise<MatcherReturnType> {
   let curResult = {
@@ -61,10 +61,7 @@ async function waitForObjects(
     sleep(timeout).then(() => curResult),
 
     repeatUntil(
-      async () => {
-        const objects = await locator.evaluateAll();
-        return objects;
-      },
+      () => locator.evaluate(),
       (objects) => condition(objects),
       (matcherReturn) => {
         curResult = matcherReturn;

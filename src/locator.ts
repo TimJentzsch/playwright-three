@@ -1,56 +1,76 @@
-import { JSHandle } from "@playwright/test";
-import { RootState } from "@react-three/fiber";
-import { Object3D } from "three";
 import { ObjectLocatorApi } from "./locatorApi";
+import { LocatorContext } from "./locatorContext";
+import { filtered, ObjectGenerator, traverseAll } from "./objectGenerators";
 
-export class ThreeLocator implements ObjectLocatorApi {
-  threeHandle: JSHandle<RootState>;
+export type LocatorFilter = {
   name?: string;
   type?: string;
-  userData: Record<string, unknown> = {};
+  userData?: Record<string, unknown>;
+};
 
-  constructor(threeHandle: JSHandle<RootState>) {
-    this.threeHandle = threeHandle;
+export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
+  ctx: LocatorContext;
+  #filter: LocatorFilter = {};
+
+  constructor(ctx: LocatorContext) {
+    this.ctx = ctx;
+  }
+
+  /**
+   * @param filter Filter the objects by the conditions.
+   * @returns The locator for chaining
+   */
+  filter(filter: LocatorFilter): ThreeLocator {
+    this.#filter = {
+      ...this.#filter,
+      ...filter,
+    };
+
+    return this;
   }
 
   /** @inheritdoc */
   getByName(name: string): ThreeLocator {
-    this.name = name;
-    return this;
+    return new ThreeLocator(this).filter({ name });
   }
 
   /** @inheritdoc */
   getByType(type: string): ThreeLocator {
-    this.type = type;
-    return this;
+    return new ThreeLocator(this).filter({ type });
   }
 
   /** @inheritdoc */
   getByUserData<T>(key: string, value: T): ThreeLocator {
-    this.userData[key] = value;
-    return this;
+    return new ThreeLocator(this).filter({ userData: { [key]: value } });
   }
 
-  async evaluateAll(): Promise<Object3D[]> {
-    return await this.threeHandle.evaluate(
-      (three, { name, type, userData }) => {
-        const results: Object3D[] = [];
-        three.scene.traverse((obj) => {
-          if (name !== undefined && obj.name !== name) return;
-          if (type !== undefined && obj.type !== type) return;
-          for (const [key, value] of Object.entries(userData)) {
-            if (obj.userData[key] !== value) return;
+  async roots(): Promise<ObjectGenerator> {
+    return this.evaluate();
+  }
+
+  async evaluate(): Promise<ObjectGenerator> {
+    const roots = await this.ctx.roots();
+
+    return filtered(traverseAll(roots), (obj) => {
+      const { name, type, userData } = this.#filter;
+
+      if (name !== undefined && obj.name !== name) {
+        return false;
+      }
+
+      if (type !== undefined && obj.type !== type) {
+        return false;
+      }
+
+      if (userData !== undefined) {
+        for (const [key, value] of Object.entries(userData)) {
+          if (obj.userData[key] !== value) {
+            return false;
           }
-          results.push(obj);
-        });
-        return results;
-      },
-      this
-    );
-  }
+        }
+      }
 
-  async evaluate(): Promise<Object3D | undefined> {
-    const results = await this.evaluateAll();
-    return results.at(0);
+      return true;
+    });
   }
 }
