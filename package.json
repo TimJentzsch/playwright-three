@@ -6,7 +6,8 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "lint": "oxlint"
   },
   "peerDependencies": {
     "@playwright/test": "*",
@@ -14,8 +15,9 @@
   },
   "devDependencies": {
     "@playwright/test": "catalog:",
-    "@types/three": "catalog:",
     "@react-three/fiber": "catalog:",
+    "@types/three": "catalog:",
+    "oxlint": "^1.30.0",
     "three": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"

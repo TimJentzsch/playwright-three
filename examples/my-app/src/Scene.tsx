@@ -22,7 +22,7 @@ export default function Scene() {
 
 function Points({ count }: { count: number }) {
   const [positions] = useState(() => {
-    const positions = new Array<Vector3Tuple>(count);
+    const positions: Vector3Tuple[] = Array.from({ length: count });
 
     for (let i = 0; i < count; i++) {
       positions[i] = [
