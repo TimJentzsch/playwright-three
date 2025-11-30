@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "examples/my-app"
+    }
+  ],
+  "extensions": {
+    "recommendations": ["oxc.oxc-vscode", "ms-playwright.playwright"]
+  },
+  "settings": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  }
+}
