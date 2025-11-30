@@ -1,5 +1,9 @@
 # playwright-three
 
+> [!WARNING]
+>
+> Work in progress.
+
 More reliable and convenient testing of your Three JS / React Three Fibre scenes with Playwright.
 
 ## Motivation
@@ -23,7 +27,7 @@ Add the dev dependency to your project:
 npm add --save-dev @timjen/playwright-three
 ```
 
-> ![WARNING]
+> [!WARNING]
 >
 > The package is not published yet.
 

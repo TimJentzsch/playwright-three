@@ -4,6 +4,13 @@
   "version": "0.1.0",
   "type": "module",
   "main": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TimJentzsch/playwright-three.git"
+  },
+  "homepage": "https://github.com/TimJentzsch/playwright-three",
+  "author": "Tim Jentzsch",
+  "license": "Apache-2.0",
   "scripts": {
     "build": "vite build",
     "dev": "vite",
