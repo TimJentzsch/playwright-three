@@ -1,23 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { expect as baseExpect, MatcherReturnType } from "@playwright/test";
 import { ThreeLocator } from "./locator";
-import { filtered, ObjectGenerator } from "./objectGenerators";
+import { ObjectGenerator } from "./objectGenerators";
+import { Object3D } from "three";
 
 export const expect = baseExpect.extend({
   async toBeVisibleInScene(locator: ThreeLocator): Promise<MatcherReturnType> {
-    return waitForObjects(locator, (objects) => {
-      const visibleObjects = [...filtered(objects, (obj) => obj.visible)];
-      if (visibleObjects.length > 0) {
+    return waitForObject(locator, (object) => {
+      if (object.visible) {
         return {
           pass: true,
-          message: () =>
-            `Expected no objects to be visible in scene, but found ${visibleObjects.length} visible object(s).`,
+          message: () => `Expected object to not be visible, but it is.`,
         };
       } else {
         return {
           pass: false,
-          message: () =>
-            `Expected at least one object to be visible in scene, but none were visible.`,
+          message: () => `Expected object to be visible, but it's not.`,
         };
       }
     });
@@ -63,6 +61,53 @@ async function waitForObjects(
     repeatUntil(
       () => locator.evaluate(),
       (objects) => condition(objects),
+      (matcherReturn) => {
+        curResult = matcherReturn;
+      },
+      250
+    )
+      .then(() => curResult)
+      .catch((error: unknown) => ({
+        pass: false,
+        message: () => String(error),
+      })),
+  ]);
+}
+
+async function waitForObject(
+  locator: ThreeLocator,
+  condition: (object: Object3D) => MatcherReturnType,
+  timeout: number = 5_000
+): Promise<MatcherReturnType> {
+  let curResult = {
+    pass: false,
+    message: () => "No objects match locator",
+  };
+
+  return Promise.race([
+    sleep(timeout).then(() => curResult),
+
+    repeatUntil(
+      () => locator.evaluate(),
+      (objects) => {
+        const allObjects = [...objects];
+        const objectCount = allObjects.length;
+
+        if (objectCount === 1) {
+          return condition(allObjects[0]);
+        } else if (objectCount === 0) {
+          return {
+            pass: false,
+            message: () => "No objects match locator",
+          };
+        } else {
+          return {
+            pass: false,
+            message: () =>
+              `${objectCount} match locator, but expected exactly one`,
+          };
+        }
+      },
       (matcherReturn) => {
         curResult = matcherReturn;
       },
