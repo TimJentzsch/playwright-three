@@ -2,7 +2,9 @@
 import { expect as baseExpect, MatcherReturnType } from "@playwright/test";
 import { ThreeLocator } from "./locator";
 import { ObjectGenerator } from "./objectGenerators";
-import { Object3D } from "three";
+import { Object3D, Vector3 } from "three";
+
+const PRECISION = 0.001;
 
 export const expect = baseExpect.extend({
   async toBeVisibleInScene(locator: ThreeLocator): Promise<MatcherReturnType> {
@@ -16,6 +18,31 @@ export const expect = baseExpect.extend({
         return {
           pass: false,
           message: () => `Expected object to be visible, but it's not.`,
+        };
+      }
+    });
+  },
+
+  async toHavePosition(
+    locator: ThreeLocator,
+    expected: Vector3,
+    precision: number = PRECISION
+  ): Promise<MatcherReturnType> {
+    return waitForObject(locator, (object) => {
+      const position = object.position;
+
+      if (expected.distanceTo(object.position) > precision) {
+        return {
+          pass: false,
+          expected,
+          actual: position,
+          message: () => `Position doesn't match the expected one.`,
+        };
+      } else {
+        return {
+          pass: true,
+          message: () =>
+            `Position matches the provided one, even though it should not.`,
         };
       }
     });

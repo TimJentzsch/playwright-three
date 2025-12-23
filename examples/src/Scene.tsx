@@ -6,6 +6,7 @@ import { ManyPoints } from "./scenes/ManyPoints";
 import { Box } from "./scenes/Box";
 import { LoadingPoints } from "./scenes/LoadingPoints";
 import { UserData } from "./scenes/UserData";
+import { Transform } from "./scenes/Transform";
 
 export default function Scene() {
   return (
@@ -19,6 +20,7 @@ export default function Scene() {
       <BrowserRouter>
         <Routes>
           <Route path="box" element={<Box />} />
+          <Route path="transform" element={<Transform />} />
           <Route path="manyPoints" element={<ManyPoints />} />
           <Route path="loadingPoints" element={<LoadingPoints />} />
           <Route path="userData" element={<UserData />} />
