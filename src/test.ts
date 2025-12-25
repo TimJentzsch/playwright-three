@@ -1,4 +1,12 @@
-import { test as base, JSHandle } from "@playwright/test";
+import {
+  test as base,
+  JSHandle,
+  PlaywrightTestArgs,
+  PlaywrightTestOptions,
+  PlaywrightWorkerArgs,
+  PlaywrightWorkerOptions,
+  TestType,
+} from "@playwright/test";
 import { RootState } from "@react-three/fiber";
 import { Scene } from "./scene";
 
@@ -12,11 +20,16 @@ type ThreeFixtures = {
   scene: Scene;
 };
 
-export const test = base.extend<ThreeFixtures>({
+export const test: TestType<
+  PlaywrightTestArgs & PlaywrightTestOptions & ThreeFixtures,
+  PlaywrightWorkerArgs & PlaywrightWorkerOptions
+> = base.extend<ThreeFixtures>({
   threeHandle: async ({ page }, use) => {
-    await page.waitForFunction(() => (window as ThreeWindow).PLAYWRIGHT_THREE !== undefined);
+    await page.waitForFunction(
+      () => (window as ThreeWindow).PLAYWRIGHT_THREE !== undefined
+    );
     const threeHandle = await page.evaluateHandle<RootState>(
-      (): RootState => (window as ThreeWindow).PLAYWRIGHT_THREE as RootState,
+      (): RootState => (window as ThreeWindow).PLAYWRIGHT_THREE as RootState
     );
 
     await use(threeHandle);
