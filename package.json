@@ -14,7 +14,9 @@
   "scripts": {
     "build": "tsdown",
     "format": "oxfmt",
-    "lint": "oxlint"
+    "format:check": "oxfmt --check",
+    "lint": "oxlint",
+    "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
     "@playwright/test": "*",

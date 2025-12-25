@@ -12,20 +12,17 @@ import { Object3D, Vector3 } from "three";
 const PRECISION = 0.001;
 
 export const expect: Expect<{
-  toBeVisibleInScene(
-    this: ExpectMatcherState,
-    locator: ThreeLocator
-  ): Promise<MatcherReturnType>;
+  toBeVisibleInScene(this: ExpectMatcherState, locator: ThreeLocator): Promise<MatcherReturnType>;
   toHavePosition(
     this: ExpectMatcherState,
     locator: ThreeLocator,
     expected: Vector3,
-    precision?: number
+    precision?: number,
   ): Promise<MatcherReturnType>;
   toHaveCountInScene(
     this: ExpectMatcherState,
     locator: ThreeLocator,
-    expectedCount: number
+    expectedCount: number,
   ): Promise<MatcherReturnType>;
 }> = baseExpect.extend({
   async toBeVisibleInScene(locator: ThreeLocator): Promise<MatcherReturnType> {
@@ -47,7 +44,7 @@ export const expect: Expect<{
   async toHavePosition(
     locator: ThreeLocator,
     expected: Vector3,
-    precision: number = PRECISION
+    precision: number = PRECISION,
   ): Promise<MatcherReturnType> {
     return waitForObject(locator, (object) => {
       const position = object.position;
@@ -62,8 +59,7 @@ export const expect: Expect<{
       } else {
         return {
           pass: true,
-          message: () =>
-            `Position matches the provided one, even though it should not.`,
+          message: () => `Position matches the provided one, even though it should not.`,
         };
       }
     });
@@ -71,7 +67,7 @@ export const expect: Expect<{
 
   async toHaveCountInScene(
     locator: ThreeLocator,
-    expectedCount: number
+    expectedCount: number,
   ): Promise<MatcherReturnType> {
     return waitForObjects(locator, (objects) => {
       const actualCount = [...objects].length;
@@ -96,7 +92,7 @@ export const expect: Expect<{
 async function waitForObjects(
   locator: ThreeLocator,
   condition: (objects: ObjectGenerator) => MatcherReturnType,
-  timeout: number = 5_000
+  timeout: number = 5_000,
 ): Promise<MatcherReturnType> {
   let curResult = {
     pass: false,
@@ -112,7 +108,7 @@ async function waitForObjects(
       (matcherReturn) => {
         curResult = matcherReturn;
       },
-      250
+      250,
     )
       .then(() => curResult)
       .catch((error: unknown) => ({
@@ -125,7 +121,7 @@ async function waitForObjects(
 async function waitForObject(
   locator: ThreeLocator,
   condition: (object: Object3D) => MatcherReturnType,
-  timeout: number = 5_000
+  timeout: number = 5_000,
 ): Promise<MatcherReturnType> {
   let curResult = {
     pass: false,
@@ -151,15 +147,14 @@ async function waitForObject(
         } else {
           return {
             pass: false,
-            message: () =>
-              `${objectCount} match locator, but expected exactly one`,
+            message: () => `${objectCount} match locator, but expected exactly one`,
           };
         }
       },
       (matcherReturn) => {
         curResult = matcherReturn;
       },
-      250
+      250,
     )
       .then(() => curResult)
       .catch((error: unknown) => ({
@@ -177,7 +172,7 @@ async function repeatUntil<T>(
   fn: () => Promise<T>,
   condition: (result: T) => MatcherReturnType,
   onReturnChange: (matcherReturn: MatcherReturnType) => void,
-  delay: number
+  delay: number,
 ): Promise<void> {
   while (true) {
     const result = await fn();

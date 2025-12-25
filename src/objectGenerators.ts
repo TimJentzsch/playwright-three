@@ -35,7 +35,7 @@ export function* traverseAll(roots: Iterable<Object3D>): ObjectGenerator {
  */
 export function* filtered(
   generator: ObjectGenerator,
-  predicate: (obj: Object3D) => boolean
+  predicate: (obj: Object3D) => boolean,
 ): ObjectGenerator {
   for (const obj of generator) {
     if (predicate(obj)) {
