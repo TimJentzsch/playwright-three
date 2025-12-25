@@ -84,3 +84,10 @@ jobs:
 
       - name: Run E2E tests
         run: pnpm run --filter=examples e2e:ci
+
+      - uses: actions/upload-artifact@v5
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
