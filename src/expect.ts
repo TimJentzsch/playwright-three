@@ -1,12 +1,33 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { expect as baseExpect, MatcherReturnType } from "@playwright/test";
+import {
+  expect as baseExpect,
+  Expect,
+  ExpectMatcherState,
+  MatcherReturnType,
+} from "@playwright/test";
 import { ThreeLocator } from "./locator";
 import { ObjectGenerator } from "./objectGenerators";
 import { Object3D, Vector3 } from "three";
 
 const PRECISION = 0.001;
 
-export const expect = baseExpect.extend({
+export const expect: Expect<{
+  toBeVisibleInScene(
+    this: ExpectMatcherState,
+    locator: ThreeLocator
+  ): Promise<MatcherReturnType>;
+  toHavePosition(
+    this: ExpectMatcherState,
+    locator: ThreeLocator,
+    expected: Vector3,
+    precision?: number
+  ): Promise<MatcherReturnType>;
+  toHaveCountInScene(
+    this: ExpectMatcherState,
+    locator: ThreeLocator,
+    expectedCount: number
+  ): Promise<MatcherReturnType>;
+}> = baseExpect.extend({
   async toBeVisibleInScene(locator: ThreeLocator): Promise<MatcherReturnType> {
     return waitForObject(locator, (object) => {
       if (object.visible) {
