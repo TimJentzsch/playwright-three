@@ -8,8 +8,8 @@ on:
     branches: [ main ]
 
 jobs:
-  library:
-    name: Check library
+  code-quality:
+    name: Check code quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -34,33 +34,6 @@ jobs:
       - name: Check types
         run: pnpm run typecheck
   
-  examples:
-    name: Check examples
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-    
-      - name: Check formatting
-        run: pnpm run --filter=examples format:check
-      
-      - name: Check linting
-        run: pnpm run --filter=examples lint
-      
-      - name: Check types
-        run: pnpm run --filter=examples typecheck
-      
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
