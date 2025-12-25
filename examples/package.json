@@ -12,9 +12,10 @@
     "format:check": "oxfmt --check",
     "lint": "oxlint",
     "typecheck": "tsc --noEmit",
-    "e2e": "pnpm run e2e:firefox",
+    "e2e": "pnpm run e2e:chromium",
+    "e2e:chromium": "playwright test --project=chromium",
     "e2e:firefox": "playwright test --project=firefox",
-    "e2e:ci": "playwright test --project=firefox"
+    "e2e:ci": "playwright test --project=chromium"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

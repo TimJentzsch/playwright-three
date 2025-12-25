@@ -80,7 +80,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       
       - name: Install playwright browser
-        run: pnpm exec playwright install firefox --with-deps
+        run: pnpm exec playwright install chromium --with-deps
 
       - name: Run E2E tests
         run: pnpm run --filter=examples e2e:ci
