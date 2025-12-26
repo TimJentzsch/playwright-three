@@ -3,6 +3,15 @@
   "version": "0.1.1",
   "type": "module",
   "main": "src/index.ts",
+  "publishConfig": {
+    "main": "dist/index.mjs",
+    "typings": "dist/index.d.ts"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TimJentzsch/playwright-three.git"
