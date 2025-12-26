@@ -1,8 +1,7 @@
 # playwright-three
 
-> [!WARNING]
->
-> Work in progress.
+[![NPM Version](https://img.shields.io/npm/v/%40timjen%2Fplaywright-three)](https://www.npmjs.com/package/@timjen/playwright-three)
+![NPM License](https://img.shields.io/npm/l/%40timjen%2Fplaywright-three)
 
 More reliable and convenient testing of your Three JS / React Three Fibre scenes with Playwright.
 
@@ -26,10 +25,6 @@ Add the dev dependency to your project:
 ```sh
 npm add --save-dev @timjen/playwright-three
 ```
-
-> [!WARNING]
->
-> The package is not published yet.
 
 You also need to expose the Three JS state on the `window` object to make it accessible from Playwright.
 
