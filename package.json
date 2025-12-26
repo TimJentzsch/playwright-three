@@ -1,8 +1,18 @@
 {
   "name": "@timjen/playwright-three",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "main": "src/index.ts",
+  "publishConfig": {
+    "main": "dist/index.mjs",
+    "typings": "dist/index.d.ts"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TimJentzsch/playwright-three.git"
@@ -12,6 +22,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "tsdown",
+    "prepare": "pnpm run build",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint",
