@@ -21,6 +21,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "tsdown",
+    "prepublish": "pnpm run build",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint",
