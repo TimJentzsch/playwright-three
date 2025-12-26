@@ -2,20 +2,58 @@ name: Publish Package
 
 on:
   push:
-    tags:
-      - 'v*'
-
-permissions:
-  id-token: write  # Required for OIDC
-  contents: read
+    branches: [ main ]
 
 jobs:
+  # Only proceed if the version in package.json was updated
+  check-version-update:
+    name: Check for version update
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.check-version.outputs.version }}
+      version-updated: ${{ steps.check-version.outputs.version-updated }}
+      tag: ${{ steps.check-version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check if version was updated
+        id: check-version
+        run: |
+          CURRENT_VERSION=$(git tag --sort=-v:refname | grep '^v' | head -n 1 | sed 's/^v//')
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+          echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+
+          if [ "$CURRENT_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "Version updated"
+            echo "version-updated=true" >> $GITHUB_OUTPUT
+
+            # Check if tag is unique
+            if git rev-parse "v$PACKAGE_VERSION" >/dev/null 2>&1; then
+              echo "Tag v$PACKAGE_VERSION already exists. Exiting."
+              exit 1
+            fi
+          else
+            echo "Version not updated"
+            echo "version-updated=false" >> $GITHUB_OUTPUT
+          fi
+
+  # Run CI again to ensure everything is fine before publishing
   ci:
+    name: CI
     uses: ./.github/workflows/ci.yaml
+    needs: check-version-update
+    if: ${{ needs.check-version-update.outputs.version-updated == 'true' }}
 
   publish:
+    name: Publish Package
     runs-on: ubuntu-latest
-    needs: ci
+    needs: [ check-version-update, ci ]
+    if: ${{ needs.check-version-update.outputs.version-updated == 'true' }}
+    permissions:
+      id-token: write  # Required for OIDC
+      contents: write  # Required to create tags and releases
     steps:
       - uses: actions/checkout@v6
 
@@ -30,6 +68,18 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Create release tag
+        run: |
+          git tag "${{ needs.check-version-update.outputs.tag }}"
+          git push origin "${{ needs.check-version-update.outputs.tag }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        run: gh release create "${{ needs.check-version-update.outputs.tag }}" --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish package
         run: pnpm publish --access=public --no-git-checks
