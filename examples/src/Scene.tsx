@@ -7,6 +7,7 @@ import { Box } from "./scenes/Box";
 import { LoadingPoints } from "./scenes/LoadingPoints";
 import { UserData } from "./scenes/UserData";
 import { Transform } from "./scenes/Transform";
+import { Color } from "./scenes/Color";
 
 export default function Scene() {
   return (
@@ -24,6 +25,7 @@ export default function Scene() {
           <Route path="manyPoints" element={<ManyPoints />} />
           <Route path="loadingPoints" element={<LoadingPoints />} />
           <Route path="userData" element={<UserData />} />
+          <Route path="color" element={<Color />} />
         </Routes>
       </BrowserRouter>
     </Canvas>

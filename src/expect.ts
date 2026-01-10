@@ -23,6 +23,12 @@ export const expect: Expect<{
     expected: Vector3,
     precision?: number
   ): Promise<MatcherReturnType>;
+  toHaveColor(
+    this: ExpectMatcherState,
+    locator: ThreeLocator,
+    expected: string | Color,
+    options?: { precision?: number }
+  ): Promise<MatcherReturnType>;
   toHaveCountInScene(
     this: ExpectMatcherState,
     locator: ThreeLocator,
@@ -71,16 +77,14 @@ export const expect: Expect<{
   },
 
   async toHaveColor(
-    locator: ThreeLocator,
-    expected: string | Color,
-    {
-      precision = 1,
-    }: {
-      precision?: number;
-    }
+    locator,
+    expected,
+    { precision = 1 } = {}
   ): Promise<MatcherReturnType> {
     return waitForObject(locator, (object) => {
-      if (!(object instanceof Mesh)) {
+      if (!isMesh(object)) {
+        console.debug([object]);
+        console.debug(object);
         return {
           pass: false,
           message: () => `Object doesn't have a material.`,
@@ -88,7 +92,16 @@ export const expect: Expect<{
       }
 
       const material = object.material;
-      const color = material.color;
+
+      if (Array.isArray(material)) {
+        return {
+          pass: false,
+          message: () =>
+            `Object has multiple materials, which is not supported.`,
+        };
+      }
+
+      const color = (material as any).color;
 
       if (color === undefined || color === null) {
         return {
@@ -97,7 +110,7 @@ export const expect: Expect<{
         };
       }
 
-      if (!(color instanceof Color)) {
+      if (!isColor(color)) {
         return {
           pass: false,
           message: () => `Material color is not a Color instance.`,
@@ -256,4 +269,12 @@ async function repeatUntil<T>(
 
     await sleep(delay);
   }
+}
+
+function isMesh(object: Object3D): object is Mesh {
+  return (object as any).isMesh === true;
+}
+
+function isColor(object: any): object is Color {
+  return (object as any).isColor === true;
 }
