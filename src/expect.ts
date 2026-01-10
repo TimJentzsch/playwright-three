@@ -7,22 +7,26 @@ import {
 } from "@playwright/test";
 import { ThreeLocator } from "./locator";
 import { ObjectGenerator } from "./objectGenerators";
-import { Object3D, Vector3 } from "three";
+import { Color, Mesh, Object3D, Vector3 } from "three";
+import ColorJs from "colorjs.io";
 
 const PRECISION = 0.001;
 
 export const expect: Expect<{
-  toBeVisibleInScene(this: ExpectMatcherState, locator: ThreeLocator): Promise<MatcherReturnType>;
+  toBeVisibleInScene(
+    this: ExpectMatcherState,
+    locator: ThreeLocator
+  ): Promise<MatcherReturnType>;
   toHavePosition(
     this: ExpectMatcherState,
     locator: ThreeLocator,
     expected: Vector3,
-    precision?: number,
+    precision?: number
   ): Promise<MatcherReturnType>;
   toHaveCountInScene(
     this: ExpectMatcherState,
     locator: ThreeLocator,
-    expectedCount: number,
+    expectedCount: number
   ): Promise<MatcherReturnType>;
 }> = baseExpect.extend({
   async toBeVisibleInScene(locator: ThreeLocator): Promise<MatcherReturnType> {
@@ -44,7 +48,7 @@ export const expect: Expect<{
   async toHavePosition(
     locator: ThreeLocator,
     expected: Vector3,
-    precision: number = PRECISION,
+    precision: number = PRECISION
   ): Promise<MatcherReturnType> {
     return waitForObject(locator, (object) => {
       const position = object.position;
@@ -59,15 +63,84 @@ export const expect: Expect<{
       } else {
         return {
           pass: true,
-          message: () => `Position matches the provided one, even though it should not.`,
+          message: () =>
+            `Position matches the provided one, even though it should not.`,
         };
       }
     });
   },
 
+  async toHaveColor(
+    locator: ThreeLocator,
+    expected: string | Color,
+    {
+      precision = 1,
+    }: {
+      precision?: number;
+    }
+  ): Promise<MatcherReturnType> {
+    return waitForObject(locator, (object) => {
+      if (!(object instanceof Mesh)) {
+        return {
+          pass: false,
+          message: () => `Object doesn't have a material.`,
+        };
+      }
+
+      const material = object.material;
+      const color = material.color;
+
+      if (color === undefined || color === null) {
+        return {
+          pass: false,
+          message: () => `Material doesn't have a color.`,
+        };
+      }
+
+      if (!(color instanceof Color)) {
+        return {
+          pass: false,
+          message: () => `Material color is not a Color instance.`,
+        };
+      }
+
+      let expectedColor: ColorJs;
+      if (typeof expected === "string") {
+        expectedColor = new ColorJs(expected);
+      } else {
+        expectedColor = new ColorJs(
+          `rgb(${expected.r * 255}, ${expected.g * 255}, ${expected.b * 255})`
+        );
+      }
+
+      const actualColor = new ColorJs(
+        `rgb(${color.r * 255}, ${color.g * 255}, ${color.b * 255})`
+      );
+      const deltaE = actualColor.deltaE2000(expectedColor);
+
+      if (deltaE > precision) {
+        return {
+          pass: false,
+          expected: expectedColor,
+          actual: actualColor,
+          message: () =>
+            `The colors are visually different (ΔE = ${deltaE} > ${precision}).`,
+        };
+      }
+
+      return {
+        pass: true,
+        actual: actualColor,
+        expected: expectedColor,
+        message: () =>
+          `The colors are visually similar (ΔE = ${deltaE} ≤ ${precision}).`,
+      };
+    });
+  },
+
   async toHaveCountInScene(
     locator: ThreeLocator,
-    expectedCount: number,
+    expectedCount: number
   ): Promise<MatcherReturnType> {
     return waitForObjects(locator, (objects) => {
       const actualCount = [...objects].length;
@@ -92,7 +165,7 @@ export const expect: Expect<{
 async function waitForObjects(
   locator: ThreeLocator,
   condition: (objects: ObjectGenerator) => MatcherReturnType,
-  timeout: number = 5_000,
+  timeout: number = 5_000
 ): Promise<MatcherReturnType> {
   let curResult = {
     pass: false,
@@ -108,7 +181,7 @@ async function waitForObjects(
       (matcherReturn) => {
         curResult = matcherReturn;
       },
-      250,
+      250
     )
       .then(() => curResult)
       .catch((error: unknown) => ({
@@ -121,7 +194,7 @@ async function waitForObjects(
 async function waitForObject(
   locator: ThreeLocator,
   condition: (object: Object3D) => MatcherReturnType,
-  timeout: number = 5_000,
+  timeout: number = 5_000
 ): Promise<MatcherReturnType> {
   let curResult = {
     pass: false,
@@ -147,14 +220,15 @@ async function waitForObject(
         } else {
           return {
             pass: false,
-            message: () => `${objectCount} match locator, but expected exactly one`,
+            message: () =>
+              `${objectCount} match locator, but expected exactly one`,
           };
         }
       },
       (matcherReturn) => {
         curResult = matcherReturn;
       },
-      250,
+      250
     )
       .then(() => curResult)
       .catch((error: unknown) => ({
@@ -172,7 +246,7 @@ async function repeatUntil<T>(
   fn: () => Promise<T>,
   condition: (result: T) => MatcherReturnType,
   onReturnChange: (matcherReturn: MatcherReturnType) => void,
-  delay: number,
+  delay: number
 ): Promise<void> {
   while (true) {
     const result = await fn();

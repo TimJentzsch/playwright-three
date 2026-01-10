@@ -21,10 +21,17 @@ catalogs:
     typescript:
       specifier: ~5.9.3
       version: 5.9.3
+    vite:
+      specifier: ^7.2.4
+      version: 7.2.4
 
 importers:
 
   .:
+    dependencies:
+      colorjs.io:
+        specifier: ^0.6.0
+        version: 0.6.0
     devDependencies:
       '@playwright/test':
         specifier: 'catalog:'
@@ -819,6 +826,9 @@ packages:
 
   caniuse-lite@1.0.30001757:
     resolution: {integrity: sha512-r0nnL/I28Zi/yjk1el6ilj27tKcdjLsNqAOZr0yVjWPrSQyHgKI2INaEWw21bAQSv2LXRt1XuCS/GomNpWOxsQ==}
+
+  colorjs.io@0.6.0:
+    resolution: {integrity: sha512-NgaccdK0ajJ9DPfa5OrIFRfTm4XILboOuqKV6tu9UonREcve+RUilZR3cdo7BbG+xIHFbDv4CxTE4M2vsj7nqw==}
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
@@ -1952,6 +1962,8 @@ snapshots:
       three: 0.181.2
 
   caniuse-lite@1.0.30001757: {}
+
+  colorjs.io@0.6.0: {}
 
   convert-source-map@2.0.0: {}
 
