@@ -13,26 +13,50 @@ import ColorJs from "colorjs.io";
 const PRECISION = 0.001;
 
 export const expect: Expect<{
+  /**
+   * Expect the locator to match a single object, that is visible in the scene.
+   */
   toBeVisibleInScene(
     this: ExpectMatcherState,
-    locator: ThreeLocator
+    /** The locator, must match a single object. */
+    locator: ThreeLocator,
   ): Promise<MatcherReturnType>;
+
+  /**
+   * Expect the object to be close to the provided position.
+   */
   toHavePosition(
     this: ExpectMatcherState,
+    /** The locator, must match a single object. */
     locator: ThreeLocator,
+    /** The expected position of the object. */
     expected: Vector3,
-    precision?: number
+    /** The maximum distance between the actual and expected position for the test to pass. */
+    precision?: number,
   ): Promise<MatcherReturnType>;
+
+  /**
+   * Expect the object to have a material color that is visually similar to the provided one.
+   */
   toHaveColor(
     this: ExpectMatcherState,
+    /** The locator, must match a single object. */
     locator: ThreeLocator,
+    /** The expected color value. */
     expected: string | Color,
-    options?: { precision?: number }
+    options?: {
+      /** The maximum color difference in ΔE for the colors to be considered the same. */
+      precision?: number;
+    },
   ): Promise<MatcherReturnType>;
+
+  /** Expect the locator to match `expectedCount` objects. */
   toHaveCountInScene(
     this: ExpectMatcherState,
+    /** The locator for the objects to count. */
     locator: ThreeLocator,
-    expectedCount: number
+    /** The expected number of objects that the locator must match. */
+    expectedCount: number,
   ): Promise<MatcherReturnType>;
 }> = baseExpect.extend({
   async toBeVisibleInScene(locator: ThreeLocator): Promise<MatcherReturnType> {
@@ -54,7 +78,7 @@ export const expect: Expect<{
   async toHavePosition(
     locator: ThreeLocator,
     expected: Vector3,
-    precision: number = PRECISION
+    precision: number = PRECISION,
   ): Promise<MatcherReturnType> {
     return waitForObject(locator, (object) => {
       const position = object.position;
@@ -79,7 +103,7 @@ export const expect: Expect<{
   async toHaveColor(
     locator,
     expected,
-    { precision = 1 } = {}
+    { precision = 1 } = {},
   ): Promise<MatcherReturnType> {
     return waitForObject(locator, (object) => {
       if (!isMesh(object)) {
@@ -122,12 +146,12 @@ export const expect: Expect<{
         expectedColor = new ColorJs(expected);
       } else {
         expectedColor = new ColorJs(
-          `rgb(${expected.r * 255}, ${expected.g * 255}, ${expected.b * 255})`
+          `rgb(${expected.r * 255}, ${expected.g * 255}, ${expected.b * 255})`,
         );
       }
 
       const actualColor = new ColorJs(
-        `rgb(${color.r * 255}, ${color.g * 255}, ${color.b * 255})`
+        `rgb(${color.r * 255}, ${color.g * 255}, ${color.b * 255})`,
       );
       const deltaE = actualColor.deltaE2000(expectedColor);
 
@@ -153,7 +177,7 @@ export const expect: Expect<{
 
   async toHaveCountInScene(
     locator: ThreeLocator,
-    expectedCount: number
+    expectedCount: number,
   ): Promise<MatcherReturnType> {
     return waitForObjects(locator, (objects) => {
       const actualCount = [...objects].length;
@@ -178,7 +202,7 @@ export const expect: Expect<{
 async function waitForObjects(
   locator: ThreeLocator,
   condition: (objects: ObjectGenerator) => MatcherReturnType,
-  timeout: number = 5_000
+  timeout: number = 5_000,
 ): Promise<MatcherReturnType> {
   let curResult = {
     pass: false,
@@ -194,7 +218,7 @@ async function waitForObjects(
       (matcherReturn) => {
         curResult = matcherReturn;
       },
-      250
+      250,
     )
       .then(() => curResult)
       .catch((error: unknown) => ({
@@ -207,7 +231,7 @@ async function waitForObjects(
 async function waitForObject(
   locator: ThreeLocator,
   condition: (object: Object3D) => MatcherReturnType,
-  timeout: number = 5_000
+  timeout: number = 5_000,
 ): Promise<MatcherReturnType> {
   let curResult = {
     pass: false,
@@ -241,7 +265,7 @@ async function waitForObject(
       (matcherReturn) => {
         curResult = matcherReturn;
       },
-      250
+      250,
     )
       .then(() => curResult)
       .catch((error: unknown) => ({
@@ -259,7 +283,7 @@ async function repeatUntil<T>(
   fn: () => Promise<T>,
   condition: (result: T) => MatcherReturnType,
   onReturnChange: (matcherReturn: MatcherReturnType) => void,
-  delay: number
+  delay: number,
 ): Promise<void> {
   while (true) {
     const result = await fn();
