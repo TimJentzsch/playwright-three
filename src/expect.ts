@@ -93,18 +93,13 @@ export const expect: Expect<{
       } else {
         return {
           pass: true,
-          message: () =>
-            `Position matches the provided one, even though it should not.`,
+          message: () => `Position matches the provided one, even though it should not.`,
         };
       }
     });
   },
 
-  async toHaveColor(
-    locator,
-    expected,
-    { precision = 1 } = {},
-  ): Promise<MatcherReturnType> {
+  async toHaveColor(locator, expected, { precision = 1 } = {}): Promise<MatcherReturnType> {
     return waitForObject(locator, (object) => {
       if (!isMesh(object)) {
         console.debug([object]);
@@ -120,8 +115,7 @@ export const expect: Expect<{
       if (Array.isArray(material)) {
         return {
           pass: false,
-          message: () =>
-            `Object has multiple materials, which is not supported.`,
+          message: () => `Object has multiple materials, which is not supported.`,
         };
       }
 
@@ -150,9 +144,7 @@ export const expect: Expect<{
         );
       }
 
-      const actualColor = new ColorJs(
-        `rgb(${color.r * 255}, ${color.g * 255}, ${color.b * 255})`,
-      );
+      const actualColor = new ColorJs(`rgb(${color.r * 255}, ${color.g * 255}, ${color.b * 255})`);
       const deltaE = actualColor.deltaE2000(expectedColor);
 
       if (deltaE > precision) {
@@ -160,8 +152,7 @@ export const expect: Expect<{
           pass: false,
           expected: expectedColor,
           actual: actualColor,
-          message: () =>
-            `The colors are visually different (ΔE = ${deltaE} > ${precision}).`,
+          message: () => `The colors are visually different (ΔE = ${deltaE} > ${precision}).`,
         };
       }
 
@@ -169,8 +160,7 @@ export const expect: Expect<{
         pass: true,
         actual: actualColor,
         expected: expectedColor,
-        message: () =>
-          `The colors are visually similar (ΔE = ${deltaE} ≤ ${precision}).`,
+        message: () => `The colors are visually similar (ΔE = ${deltaE} ≤ ${precision}).`,
       };
     });
   },
@@ -257,8 +247,7 @@ async function waitForObject(
         } else {
           return {
             pass: false,
-            message: () =>
-              `${objectCount} match locator, but expected exactly one`,
+            message: () => `${objectCount} match locator, but expected exactly one`,
           };
         }
       },
