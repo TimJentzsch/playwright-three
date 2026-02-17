@@ -1,4 +1,4 @@
-import type { JSHandle } from "@playwright/test";
+import type { JSHandle, Page } from "@playwright/test";
 import type { RootState } from "@react-three/fiber";
 import { ThreeLocator } from "./locator";
 import { ObjectLocatorApi } from "./locatorApi";
@@ -6,11 +6,16 @@ import { Object3D } from "three";
 import { LocatorContext } from "./locatorContext";
 import { single } from "./objectGenerators";
 
-export class Scene implements ObjectLocatorApi, LocatorContext {
-  threeHandle: JSHandle<RootState>;
+type ThreeWindow = Window & {
+  PLAYWRIGHT_THREE?: RootState;
+};
 
-  constructor(threeHandle: JSHandle<RootState>) {
-    this.threeHandle = threeHandle;
+export class Scene implements ObjectLocatorApi, LocatorContext {
+  page: Page;
+  threeHandle: JSHandle<RootState> | undefined;
+
+  constructor(page: Page) {
+    this.page = page;
   }
 
   /** @inheritdoc */
@@ -29,7 +34,15 @@ export class Scene implements ObjectLocatorApi, LocatorContext {
   }
 
   async roots(): Promise<Generator<Object3D>> {
-    const scene = await this.threeHandle.evaluate((state) => state.scene);
+    let threeHandle = this.threeHandle;
+    // Lazily determine the three JS scene state, if not already done
+    if (!threeHandle) {
+      await this.page.waitForFunction(() => (window as ThreeWindow).PLAYWRIGHT_THREE !== undefined);
+      threeHandle = await this.page.evaluateHandle<RootState>(
+        (): RootState => (window as ThreeWindow).PLAYWRIGHT_THREE as RootState,
+      );
+    }
+    const scene = await threeHandle.evaluate((state) => state.scene);
 
     return single(scene);
   }
