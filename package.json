@@ -1,11 +1,11 @@
 {
   "name": "@timjen/playwright-three",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "main": "src/index.ts",
   "publishConfig": {
     "main": "dist/index.mjs",
-    "typings": "dist/index.d.ts"
+    "typings": "dist/index.d.mts"
   },
   "files": [
     "dist",
