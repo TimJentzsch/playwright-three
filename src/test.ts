@@ -10,10 +10,6 @@ import {
 import { RootState } from "@react-three/fiber";
 import { Scene } from "./scene";
 
-type ThreeWindow = Window & {
-  PLAYWRIGHT_THREE?: RootState;
-};
-
 type ThreeFixtures = {
   threeHandle: JSHandle<RootState>;
 
@@ -24,17 +20,8 @@ export const test: TestType<
   PlaywrightTestArgs & PlaywrightTestOptions & ThreeFixtures,
   PlaywrightWorkerArgs & PlaywrightWorkerOptions
 > = base.extend<ThreeFixtures>({
-  threeHandle: async ({ page }, use) => {
-    await page.waitForFunction(() => (window as ThreeWindow).PLAYWRIGHT_THREE !== undefined);
-    const threeHandle = await page.evaluateHandle<RootState>(
-      (): RootState => (window as ThreeWindow).PLAYWRIGHT_THREE as RootState,
-    );
-
-    await use(threeHandle);
-  },
-
-  scene: async ({ threeHandle }, use) => {
-    const scene = new Scene(threeHandle);
+  scene: async ({ page }, use) => {
+    const scene = new Scene(page);
     await use(scene);
   },
 });
