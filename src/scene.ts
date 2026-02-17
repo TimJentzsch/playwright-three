@@ -41,6 +41,7 @@ export class Scene implements ObjectLocatorApi, LocatorContext {
       threeHandle = await this.page.evaluateHandle<RootState>(
         (): RootState => (window as ThreeWindow).PLAYWRIGHT_THREE as RootState,
       );
+      this.threeHandle = threeHandle;
     }
     const scene = await threeHandle.evaluate((state) => state.scene);
 
