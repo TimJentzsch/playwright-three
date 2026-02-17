@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "publishConfig": {
     "main": "dist/index.mjs",
-    "typings": "dist/index.d.ts"
+    "typings": "dist/index.d.mts"
   },
   "files": [
     "dist",
