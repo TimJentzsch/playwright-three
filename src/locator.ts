@@ -1,6 +1,9 @@
 import { LocatorOptions, ObjectLocatorApi } from "./locatorApi";
 import { LocatorContext } from "./locatorContext";
-import { filtered, ObjectGenerator, traverseAll } from "./objectGenerators";
+
+/**
+ * @import { ObjectGenerator } from "./preload/objectGenerators";
+ */
 
 export type LocatorFilter = {
   name?: string;

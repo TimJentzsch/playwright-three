@@ -6,7 +6,6 @@ import {
   MatcherReturnType,
 } from "@playwright/test";
 import { ThreeLocator } from "./locator";
-import { ObjectGenerator } from "./objectGenerators";
 import { Color, Mesh, Object3D, Vector3 } from "three";
 import ColorJs from "colorjs.io";
 

@@ -4,7 +4,6 @@ import { ThreeLocator } from "./locator";
 import { LocatorOptions, ObjectLocatorApi } from "./locatorApi";
 import { Object3D } from "three";
 import { LocatorContext } from "./locatorContext";
-import { single } from "./objectGenerators";
 
 type ThreeWindow = Window & {
   PLAYWRIGHT_THREE?: RootState;

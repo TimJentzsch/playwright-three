@@ -10,7 +10,7 @@
  * @param {Object3D} object The object to generate
  * @returns {ObjectGenerator} A generator that yields the given object only.
  */
-export function* single(object) {
+function* single(object) {
   yield object;
 }
 
@@ -19,7 +19,7 @@ export function* single(object) {
  * @param {number} maxDepth
  * @returns {ObjectGenerator} A generator doing a depth-first traversal of the object and its descendants.
  */
-export function* traverse(root, maxDepth) {
+function* traverse(root, maxDepth) {
   yield root;
   if (maxDepth > 0) {
     yield* traverseAll(root.children, maxDepth - 1);
@@ -31,7 +31,7 @@ export function* traverse(root, maxDepth) {
  * @param {number} maxDepth
  * @returns {ObjectGenerator} A generator doing a depth-first traversal of all given objects and their descendants.
  */
-export function* traverseAll(roots, maxDepth) {
+function* traverseAll(roots, maxDepth) {
   for (const object of roots) {
     yield* traverse(object, maxDepth);
   }
@@ -42,7 +42,7 @@ export function* traverseAll(roots, maxDepth) {
  * @param {(obj: Object3D) => boolean} predicate The condition to filter the objects by
  * @returns {ObjectGenerator}
  */
-export function* filtered(generator, predicate) {
+function* filtered(generator, predicate) {
   for (const obj of generator) {
     if (predicate(obj)) {
       yield obj;

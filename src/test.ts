@@ -10,6 +10,8 @@ import {
 import { RootState } from "@react-three/fiber";
 import { Scene } from "./scene";
 
+const objectGeneratorsPath = new URL("./preload/objectGenerators.js", import.meta.url).pathname;
+
 type ThreeFixtures = {
   threeHandle: JSHandle<RootState>;
 
@@ -21,6 +23,9 @@ export const test: TestType<
   PlaywrightWorkerArgs & PlaywrightWorkerOptions
 > = base.extend<ThreeFixtures>({
   scene: async ({ page }, use) => {
+    page.addInitScript({
+      path: objectGeneratorsPath,
+    });
     const scene = new Scene(page);
     await use(scene);
   },
