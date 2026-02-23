@@ -1,5 +1,4 @@
 import { Object3D } from "three";
-import { LocatorOptions } from "./locatorApi";
 
 export type ObjectGenerator = Generator<Object3D>;
 
@@ -26,10 +25,7 @@ export function* traverse(root: Object3D, maxDepth: number): ObjectGenerator {
  * @param roots The objects to start traversing from, in order.
  * @returns A generator doing a depth-first traversal of all given objects and their descendants.
  */
-export function* traverseAll(
-  roots: Iterable<Object3D>,
-  maxDepth: number,
-): ObjectGenerator {
+export function* traverseAll(roots: Iterable<Object3D>, maxDepth: number): ObjectGenerator {
   for (const object of roots) {
     yield* traverse(object, maxDepth);
   }

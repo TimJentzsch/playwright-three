@@ -24,9 +24,5 @@ export interface ObjectLocatorApi {
    * @param key The key of the user data entry.
    * @param value The expected value of the user data entry.
    */
-  getByUserData<T>(
-    key: string,
-    value: T,
-    options?: LocatorOptions,
-  ): ObjectLocatorApi;
+  getByUserData<T>(key: string, value: T, options?: LocatorOptions): ObjectLocatorApi;
 }

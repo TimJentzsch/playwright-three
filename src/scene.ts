@@ -29,11 +29,7 @@ export class Scene implements ObjectLocatorApi, LocatorContext {
   }
 
   /** @inheritdoc */
-  getByUserData<T>(
-    key: string,
-    value: T,
-    options?: LocatorOptions,
-  ): ThreeLocator {
+  getByUserData<T>(key: string, value: T, options?: LocatorOptions): ThreeLocator {
     return new ThreeLocator(this, options).filter({
       userData: { [key]: value },
     });
@@ -43,9 +39,7 @@ export class Scene implements ObjectLocatorApi, LocatorContext {
     let threeHandle = this.threeHandle;
     // Lazily determine the three JS scene state, if not already done
     if (!threeHandle) {
-      await this.page.waitForFunction(
-        () => (window as ThreeWindow).PLAYWRIGHT_THREE !== undefined,
-      );
+      await this.page.waitForFunction(() => (window as ThreeWindow).PLAYWRIGHT_THREE !== undefined);
       threeHandle = await this.page.evaluateHandle<RootState>(
         (): RootState => (window as ThreeWindow).PLAYWRIGHT_THREE as RootState,
       );

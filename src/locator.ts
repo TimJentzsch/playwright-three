@@ -42,11 +42,7 @@ export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
   }
 
   /** @inheritdoc */
-  getByUserData<T>(
-    key: string,
-    value: T,
-    options?: LocatorOptions,
-  ): ThreeLocator {
+  getByUserData<T>(key: string, value: T, options?: LocatorOptions): ThreeLocator {
     return new ThreeLocator(this, options).filter({
       userData: { [key]: value },
     });
@@ -59,29 +55,26 @@ export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
   async evaluate(): Promise<ObjectGenerator> {
     const roots = await this.ctx.roots();
 
-    return filtered(
-      traverseAll(roots, this.#options.maxDepth ?? Infinity),
-      (obj) => {
-        const { name, type, userData } = this.#filter;
+    return filtered(traverseAll(roots, this.#options.maxDepth ?? Infinity), (obj) => {
+      const { name, type, userData } = this.#filter;
 
-        if (name !== undefined && obj.name !== name) {
-          return false;
-        }
+      if (name !== undefined && obj.name !== name) {
+        return false;
+      }
 
-        if (type !== undefined && obj.type !== type) {
-          return false;
-        }
+      if (type !== undefined && obj.type !== type) {
+        return false;
+      }
 
-        if (userData !== undefined) {
-          for (const [key, value] of Object.entries(userData)) {
-            if (obj.userData[key] !== value) {
-              return false;
-            }
+      if (userData !== undefined) {
+        for (const [key, value] of Object.entries(userData)) {
+          if (obj.userData[key] !== value) {
+            return false;
           }
         }
+      }
 
-        return true;
-      },
-    );
+      return true;
+    });
   }
 }

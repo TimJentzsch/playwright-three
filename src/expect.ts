@@ -106,8 +106,7 @@ export const expect: Expect<{
       } else {
         return {
           pass: true,
-          message: () =>
-            `Position matches the provided one, even though it should not.`,
+          message: () => `Position matches the provided one, even though it should not.`,
         };
       }
     });
@@ -135,8 +134,7 @@ export const expect: Expect<{
         if (Array.isArray(material)) {
           return {
             pass: false,
-            message: () =>
-              `Object has multiple materials, which is not supported.`,
+            message: () => `Object has multiple materials, which is not supported.`,
           };
         }
 
@@ -175,8 +173,7 @@ export const expect: Expect<{
             pass: false,
             expected: expectedColor,
             actual: actualColor,
-            message: () =>
-              `The colors are visually different (ΔE = ${deltaE} > ${precision}).`,
+            message: () => `The colors are visually different (ΔE = ${deltaE} > ${precision}).`,
           };
         }
 
@@ -184,19 +181,14 @@ export const expect: Expect<{
           pass: true,
           actual: actualColor,
           expected: expectedColor,
-          message: () =>
-            `The colors are visually similar (ΔE = ${deltaE} ≤ ${precision}).`,
+          message: () => `The colors are visually similar (ΔE = ${deltaE} ≤ ${precision}).`,
         };
       },
       { timeout },
     );
   },
 
-  async toHaveCountInScene(
-    locator,
-    expectedCount,
-    options = {},
-  ): Promise<MatcherReturnType> {
+  async toHaveCountInScene(locator, expectedCount, options = {}): Promise<MatcherReturnType> {
     return waitForObjects(
       locator,
       (objects) => {
@@ -279,8 +271,7 @@ async function waitForObject(
         } else {
           return {
             pass: false,
-            message: () =>
-              `${objectCount} match locator, but expected exactly one`,
+            message: () => `${objectCount} match locator, but expected exactly one`,
           };
         }
       },
