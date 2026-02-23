@@ -2,7 +2,6 @@ import type { JSHandle, Page } from "@playwright/test";
 import type { RootState } from "@react-three/fiber";
 import { ThreeLocator } from "./locator";
 import { LocatorOptions, ObjectLocatorApi } from "./locatorApi";
-import { Object3D } from "three";
 import { LocatorContext } from "./locatorContext";
 
 type ThreeWindow = Window & {
@@ -34,7 +33,7 @@ export class Scene implements ObjectLocatorApi, LocatorContext {
     });
   }
 
-  async roots(): Promise<Generator<Object3D>> {
+  async roots(): Promise<JSHandle<ObjectGenerator>> {
     let threeHandle = this.threeHandle;
     // Lazily determine the three JS scene state, if not already done
     if (!threeHandle) {
@@ -44,8 +43,8 @@ export class Scene implements ObjectLocatorApi, LocatorContext {
       );
       this.threeHandle = threeHandle;
     }
-    const scene = await threeHandle.evaluate((state) => state.scene);
+    const sceneHandle = await threeHandle.evaluateHandle((state) => single(state.scene));
 
-    return single(scene);
+    return sceneHandle;
   }
 }

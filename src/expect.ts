@@ -191,7 +191,7 @@ export const expect: Expect<{
     return waitForObjects(
       locator,
       (objects) => {
-        const actualCount = [...objects].length;
+        const actualCount = objects.length;
 
         if (actualCount === expectedCount) {
           return {
@@ -214,7 +214,7 @@ export const expect: Expect<{
 
 async function waitForObjects(
   locator: ThreeLocator,
-  condition: (objects: ObjectGenerator) => MatcherReturnType,
+  condition: (objects: Object3D[]) => MatcherReturnType,
   { timeout = 5_000 }: CommonOptions = {},
 ): Promise<MatcherReturnType> {
   let curResult = {
@@ -226,7 +226,7 @@ async function waitForObjects(
     sleep(timeout).then(() => curResult),
 
     repeatUntil(
-      () => locator.evaluate(),
+      async () => (await locator.evaluate()).evaluate((objects) => [...objects]),
       (objects) => condition(objects),
       (matcherReturn) => {
         curResult = matcherReturn;
@@ -255,13 +255,12 @@ async function waitForObject(
     sleep(timeout).then(() => curResult),
 
     repeatUntil(
-      () => locator.evaluate(),
+      async () => (await locator.evaluate()).evaluate((objects) => [...objects]),
       (objects) => {
-        const allObjects = [...objects];
-        const objectCount = allObjects.length;
+        const objectCount = objects.length;
 
         if (objectCount === 1) {
-          return condition(allObjects[0]);
+          return condition(objects[0]);
         } else if (objectCount === 0) {
           return {
             pass: false,

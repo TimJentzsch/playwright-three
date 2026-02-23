@@ -1,3 +1,4 @@
+import { JSHandle } from "@playwright/test";
 import { LocatorOptions, ObjectLocatorApi } from "./locatorApi";
 import { LocatorContext } from "./locatorContext";
 
@@ -51,33 +52,40 @@ export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
     });
   }
 
-  async roots(): Promise<ObjectGenerator> {
+  async roots(): Promise<JSHandle<ObjectGenerator>> {
     return this.evaluate();
   }
 
-  async evaluate(): Promise<ObjectGenerator> {
-    const roots = await this.ctx.roots();
+  async evaluate(): Promise<JSHandle<ObjectGenerator>> {
+    const rootsHandle = await this.ctx.roots();
 
-    return filtered(traverseAll(roots, this.#options.maxDepth ?? Infinity), (obj) => {
-      const { name, type, userData } = this.#filter;
+    return rootsHandle.evaluateHandle(
+      (roots, { filter, options }) =>
+        filtered(traverseAll(roots, options.maxDepth ?? Infinity), (obj) => {
+          const { name, type, userData } = filter;
 
-      if (name !== undefined && obj.name !== name) {
-        return false;
-      }
-
-      if (type !== undefined && obj.type !== type) {
-        return false;
-      }
-
-      if (userData !== undefined) {
-        for (const [key, value] of Object.entries(userData)) {
-          if (obj.userData[key] !== value) {
+          if (name !== undefined && obj.name !== name) {
             return false;
           }
-        }
-      }
 
-      return true;
-    });
+          if (type !== undefined && obj.type !== type) {
+            return false;
+          }
+
+          if (userData !== undefined) {
+            for (const [key, value] of Object.entries(userData)) {
+              if (obj.userData[key] !== value) {
+                return false;
+              }
+            }
+          }
+
+          return true;
+        }),
+      {
+        filter: this.#filter,
+        options: this.#options,
+      },
+    );
   }
 }

@@ -23,9 +23,11 @@ export const test: TestType<
   PlaywrightWorkerArgs & PlaywrightWorkerOptions
 > = base.extend<ThreeFixtures>({
   scene: async ({ page }, use) => {
-    page.addInitScript({
+    await page.addInitScript({
       path: objectGeneratorsPath,
     });
+    // Ensure that the init script is available
+    await page.reload();
     const scene = new Scene(page);
     await use(scene);
   },
