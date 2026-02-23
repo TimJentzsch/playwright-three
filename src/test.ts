@@ -1,25 +1,36 @@
 import {
   test as base,
-  JSHandle,
   PlaywrightTestArgs,
   PlaywrightTestOptions,
   PlaywrightWorkerArgs,
   PlaywrightWorkerOptions,
   TestType,
 } from "@playwright/test";
-import { RootState } from "@react-three/fiber";
 import { Scene } from "./scene";
 
-type ThreeFixtures = {
-  threeHandle: JSHandle<RootState>;
+const objectGeneratorsPath = new URL("./preload/objectGenerators.js", import.meta.url).pathname;
 
+type ThreeTestFixtures = {
   scene: Scene;
+
+  autoLoadSceneScripts: "autoLoadSceneScripts";
 };
 
 export const test: TestType<
-  PlaywrightTestArgs & PlaywrightTestOptions & ThreeFixtures,
+  PlaywrightTestArgs & PlaywrightTestOptions & ThreeTestFixtures,
   PlaywrightWorkerArgs & PlaywrightWorkerOptions
-> = base.extend<ThreeFixtures>({
+> = base.extend<ThreeTestFixtures>({
+  autoLoadSceneScripts: [
+    async ({ page }, use) => {
+      await page.addInitScript({
+        path: objectGeneratorsPath,
+      });
+
+      use("autoLoadSceneScripts");
+    },
+    { scope: "test", auto: true },
+  ],
+
   scene: async ({ page }, use) => {
     const scene = new Scene(page);
     await use(scene);
