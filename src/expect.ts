@@ -12,6 +12,11 @@ import ColorJs from "colorjs.io";
 
 const PRECISION = 0.001;
 
+type CommonOptions = {
+  /** How long to wait until the condition has to be reached (in ms). */
+  timeout?: number;
+};
+
 export const expect: Expect<{
   /**
    * Expect the locator to match a single object, that is visible in the scene.
@@ -20,6 +25,7 @@ export const expect: Expect<{
     this: ExpectMatcherState,
     /** The locator, must match a single object. */
     locator: ThreeLocator,
+    options?: CommonOptions,
   ): Promise<MatcherReturnType>;
 
   /**
@@ -31,8 +37,10 @@ export const expect: Expect<{
     locator: ThreeLocator,
     /** The expected position of the object. */
     expected: Vector3,
-    /** The maximum distance between the actual and expected position for the test to pass. */
-    precision?: number,
+    options?: CommonOptions & {
+      /** The maximum distance between the actual and expected position for the test to pass. */
+      precision?: number;
+    },
   ): Promise<MatcherReturnType>;
 
   /**
@@ -44,7 +52,7 @@ export const expect: Expect<{
     locator: ThreeLocator,
     /** The expected color value. */
     expected: string | Color,
-    options?: {
+    options?: CommonOptions & {
       /** The maximum color difference in ΔE for the colors to be considered the same. */
       precision?: number;
     },
@@ -57,28 +65,33 @@ export const expect: Expect<{
     locator: ThreeLocator,
     /** The expected number of objects that the locator must match. */
     expectedCount: number,
+    options?: CommonOptions,
   ): Promise<MatcherReturnType>;
 }> = baseExpect.extend({
-  async toBeVisibleInScene(locator: ThreeLocator): Promise<MatcherReturnType> {
-    return waitForObject(locator, (object) => {
-      if (object.visible) {
-        return {
-          pass: true,
-          message: () => `Expected object to not be visible, but it is.`,
-        };
-      } else {
-        return {
-          pass: false,
-          message: () => `Expected object to be visible, but it's not.`,
-        };
-      }
-    });
+  async toBeVisibleInScene(locator, options = {}): Promise<MatcherReturnType> {
+    return waitForObject(
+      locator,
+      (object) => {
+        if (object.visible) {
+          return {
+            pass: true,
+            message: () => `Expected object to not be visible, but it is.`,
+          };
+        } else {
+          return {
+            pass: false,
+            message: () => `Expected object to be visible, but it's not.`,
+          };
+        }
+      },
+      options,
+    );
   },
 
   async toHavePosition(
-    locator: ThreeLocator,
-    expected: Vector3,
-    precision: number = PRECISION,
+    locator,
+    expected,
+    { precision = PRECISION } = {},
   ): Promise<MatcherReturnType> {
     return waitForObject(locator, (object) => {
       const position = object.position;
@@ -99,100 +112,111 @@ export const expect: Expect<{
     });
   },
 
-  async toHaveColor(locator, expected, { precision = 1 } = {}): Promise<MatcherReturnType> {
-    return waitForObject(locator, (object) => {
-      if (!isMesh(object)) {
-        console.debug([object]);
-        console.debug(object);
-        return {
-          pass: false,
-          message: () => `Object doesn't have a material.`,
-        };
-      }
-
-      const material = object.material;
-
-      if (Array.isArray(material)) {
-        return {
-          pass: false,
-          message: () => `Object has multiple materials, which is not supported.`,
-        };
-      }
-
-      const color = (material as any).color;
-
-      if (color === undefined || color === null) {
-        return {
-          pass: false,
-          message: () => `Material doesn't have a color.`,
-        };
-      }
-
-      if (!isColor(color)) {
-        return {
-          pass: false,
-          message: () => `Material color is not a Color instance.`,
-        };
-      }
-
-      let expectedColor: ColorJs;
-      if (typeof expected === "string") {
-        expectedColor = new ColorJs(expected);
-      } else {
-        expectedColor = new ColorJs(
-          `rgb(${expected.r * 255}, ${expected.g * 255}, ${expected.b * 255})`,
-        );
-      }
-
-      const actualColor = new ColorJs(`rgb(${color.r * 255}, ${color.g * 255}, ${color.b * 255})`);
-      const deltaE = actualColor.deltaE2000(expectedColor);
-
-      if (deltaE > precision) {
-        return {
-          pass: false,
-          expected: expectedColor,
-          actual: actualColor,
-          message: () => `The colors are visually different (ΔE = ${deltaE} > ${precision}).`,
-        };
-      }
-
-      return {
-        pass: true,
-        actual: actualColor,
-        expected: expectedColor,
-        message: () => `The colors are visually similar (ΔE = ${deltaE} ≤ ${precision}).`,
-      };
-    });
-  },
-
-  async toHaveCountInScene(
-    locator: ThreeLocator,
-    expectedCount: number,
+  async toHaveColor(
+    locator,
+    expected,
+    { precision = 1, timeout } = {},
   ): Promise<MatcherReturnType> {
-    return waitForObjects(locator, (objects) => {
-      const actualCount = [...objects].length;
+    return waitForObject(
+      locator,
+      (object) => {
+        if (!isMesh(object)) {
+          console.debug([object]);
+          console.debug(object);
+          return {
+            pass: false,
+            message: () => `Object doesn't have a material.`,
+          };
+        }
 
-      if (actualCount === expectedCount) {
+        const material = object.material;
+
+        if (Array.isArray(material)) {
+          return {
+            pass: false,
+            message: () => `Object has multiple materials, which is not supported.`,
+          };
+        }
+
+        const color = (material as any).color;
+
+        if (color === undefined || color === null) {
+          return {
+            pass: false,
+            message: () => `Material doesn't have a color.`,
+          };
+        }
+
+        if (!isColor(color)) {
+          return {
+            pass: false,
+            message: () => `Material color is not a Color instance.`,
+          };
+        }
+
+        let expectedColor: ColorJs;
+        if (typeof expected === "string") {
+          expectedColor = new ColorJs(expected);
+        } else {
+          expectedColor = new ColorJs(
+            `rgb(${expected.r * 255}, ${expected.g * 255}, ${expected.b * 255})`,
+          );
+        }
+
+        const actualColor = new ColorJs(
+          `rgb(${color.r * 255}, ${color.g * 255}, ${color.b * 255})`,
+        );
+        const deltaE = actualColor.deltaE2000(expectedColor);
+
+        if (deltaE > precision) {
+          return {
+            pass: false,
+            expected: expectedColor,
+            actual: actualColor,
+            message: () => `The colors are visually different (ΔE = ${deltaE} > ${precision}).`,
+          };
+        }
+
         return {
           pass: true,
-          message: () =>
-            `Expected not to find ${expectedCount} objects in scene, but found ${actualCount}.`,
+          actual: actualColor,
+          expected: expectedColor,
+          message: () => `The colors are visually similar (ΔE = ${deltaE} ≤ ${precision}).`,
         };
-      } else {
-        return {
-          pass: false,
-          message: () =>
-            `Expected to find ${expectedCount} objects in scene, but found ${actualCount}.`,
-        };
-      }
-    });
+      },
+      { timeout },
+    );
+  },
+
+  async toHaveCountInScene(locator, expectedCount, options = {}): Promise<MatcherReturnType> {
+    return waitForObjects(
+      locator,
+      (objects) => {
+        const actualCount = [...objects].length;
+
+        if (actualCount === expectedCount) {
+          return {
+            pass: true,
+            message: () =>
+              `Expected not to find ${expectedCount} objects in scene, but found ${actualCount}.`,
+          };
+        } else {
+          return {
+            pass: false,
+            message: () =>
+              `Expected to find ${expectedCount} objects in scene, but found ${actualCount}.`,
+          };
+        }
+      },
+      options,
+    );
   },
 });
 
 async function waitForObjects(
   locator: ThreeLocator,
   condition: (objects: ObjectGenerator) => MatcherReturnType,
-  timeout: number = 5_000,
+  { timeout = 5_000 }: CommonOptions = {},
 ): Promise<MatcherReturnType> {
   let curResult = {
     pass: false,
@@ -221,7 +245,7 @@ async function waitForObjects(
 async function waitForObject(
   locator: ThreeLocator,
   condition: (object: Object3D) => MatcherReturnType,
-  timeout: number = 5_000,
+  { timeout = 5_000 }: CommonOptions = {},
 ): Promise<MatcherReturnType> {
   let curResult = {
     pass: false,

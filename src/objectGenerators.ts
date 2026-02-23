@@ -14,18 +14,20 @@ export function* single(object: Object3D): ObjectGenerator {
  * @param root The object to start traversing from.
  * @returns A generator doing a depth-first traversal of the object and its descendants.
  */
-export function* traverse(root: Object3D): ObjectGenerator {
+export function* traverse(root: Object3D, maxDepth: number): ObjectGenerator {
   yield root;
-  yield* traverseAll(root.children);
+  if (maxDepth > 0) {
+    yield* traverseAll(root.children, maxDepth - 1);
+  }
 }
 
 /**
  * @param roots The objects to start traversing from, in order.
  * @returns A generator doing a depth-first traversal of all given objects and their descendants.
  */
-export function* traverseAll(roots: Iterable<Object3D>): ObjectGenerator {
+export function* traverseAll(roots: Iterable<Object3D>, maxDepth: number): ObjectGenerator {
   for (const object of roots) {
-    yield* traverse(object);
+    yield* traverse(object, maxDepth);
   }
 }
 

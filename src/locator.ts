@@ -1,4 +1,4 @@
-import { ObjectLocatorApi } from "./locatorApi";
+import { LocatorOptions, ObjectLocatorApi } from "./locatorApi";
 import { LocatorContext } from "./locatorContext";
 import { filtered, ObjectGenerator, traverseAll } from "./objectGenerators";
 
@@ -11,9 +11,11 @@ export type LocatorFilter = {
 export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
   ctx: LocatorContext;
   #filter: LocatorFilter = {};
+  #options: LocatorOptions = {};
 
-  constructor(ctx: LocatorContext) {
+  constructor(ctx: LocatorContext, options: LocatorOptions = {}) {
     this.ctx = ctx;
+    this.#options = options;
   }
 
   /**
@@ -30,18 +32,20 @@ export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
   }
 
   /** @inheritdoc */
-  getByName(name: string): ThreeLocator {
-    return new ThreeLocator(this).filter({ name });
+  getByName(name: string, options?: LocatorOptions): ThreeLocator {
+    return new ThreeLocator(this, options).filter({ name });
   }
 
   /** @inheritdoc */
-  getByType(type: string): ThreeLocator {
-    return new ThreeLocator(this).filter({ type });
+  getByType(type: string, options?: LocatorOptions): ThreeLocator {
+    return new ThreeLocator(this, options).filter({ type });
   }
 
   /** @inheritdoc */
-  getByUserData<T>(key: string, value: T): ThreeLocator {
-    return new ThreeLocator(this).filter({ userData: { [key]: value } });
+  getByUserData<T>(key: string, value: T, options?: LocatorOptions): ThreeLocator {
+    return new ThreeLocator(this, options).filter({
+      userData: { [key]: value },
+    });
   }
 
   async roots(): Promise<ObjectGenerator> {
@@ -51,7 +55,7 @@ export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
   async evaluate(): Promise<ObjectGenerator> {
     const roots = await this.ctx.roots();
 
-    return filtered(traverseAll(roots), (obj) => {
+    return filtered(traverseAll(roots, this.#options.maxDepth ?? Infinity), (obj) => {
       const { name, type, userData } = this.#filter;
 
       if (name !== undefined && obj.name !== name) {
