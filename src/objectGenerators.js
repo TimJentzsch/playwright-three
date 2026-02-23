@@ -49,3 +49,8 @@ export function* filtered(generator, predicate) {
     }
   }
 }
+
+globalThis.single = single;
+globalThis.traverse = traverse;
+globalThis.traverseAll = traverseAll;
+globalThis.filtered = filtered;
