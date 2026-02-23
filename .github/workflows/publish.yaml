@@ -15,28 +15,25 @@ jobs:
       tag: ${{ steps.check-version.outputs.tag }}
     steps:
       - uses: actions/checkout@v6
+        # Fetch all commits to get all tags
+        fetch-depth: 0
+        fetch-tags: true
 
       - name: Check if version was updated
         id: check-version
         run: |
-          CURRENT_VERSION=$(git tag --sort=-v:refname | grep '^v' | head -n 1 | sed 's/^v//')
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_TAG=v$PACKAGE_VERSION
 
           echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
-          echo "tag=v$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$PACKAGE_TAG" >> $GITHUB_OUTPUT
 
-          if [ "$CURRENT_VERSION" != "$PACKAGE_VERSION" ]; then
-            echo "Version updated"
-            echo "version-updated=true" >> $GITHUB_OUTPUT
-
-            # Check if tag is unique
-            if git rev-parse "v$PACKAGE_VERSION" >/dev/null 2>&1; then
-              echo "Tag v$PACKAGE_VERSION already exists. Exiting."
-              exit 1
-            fi
-          else
-            echo "Version not updated"
+          if EXISTING_COMMIT=$(git rev-parse "$PACKAGE_TAG" 2>/dev/null); then
+            echo "Version $PACKAGE_TAG already exists. Nothing to publish."
             echo "version-updated=false" >> $GITHUB_OUTPUT
+          else
+            echo "Version $PACKAGE_TAG is NEW. Release required."
+            echo "version-updated=true" >> $GITHUB_OUTPUT
           fi
 
   # Run CI again to ensure everything is fine before publishing
