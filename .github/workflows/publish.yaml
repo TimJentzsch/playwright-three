@@ -15,9 +15,10 @@ jobs:
       tag: ${{ steps.check-version.outputs.tag }}
     steps:
       - uses: actions/checkout@v6
-        # Fetch all commits to get all tags
-        fetch-depth: 0
-        fetch-tags: true
+        with:
+          # Fetch all commits to get all tags
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Check if version was updated
         id: check-version
