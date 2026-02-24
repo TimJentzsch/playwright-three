@@ -221,17 +221,23 @@ async function waitForLocator(
 
     repeatUntil(
       async () =>
-        await locator._page().evaluate((locatorData) => {
-          const objects = applyLocator(locatorData);
+        await locator._page().evaluate(
+          ({ locatorData, objDataRequest }) => {
+            const objects = applyLocator(locatorData);
 
-          const objData = [];
+            const objData = [];
 
-          for (const obj of objects) {
-            objData.push(getObjectData(objDataRequest)(obj));
-          }
+            for (const obj of objects) {
+              objData.push(getObjectData(objDataRequest)(obj));
+            }
 
-          return objData;
-        }, locator._locatorData()),
+            return objData;
+          },
+          {
+            locatorData: locator._locatorData(),
+            objDataRequest,
+          },
+        ),
       (objData) => condition(objData),
       (matcherReturn) => {
         curResult = matcherReturn;

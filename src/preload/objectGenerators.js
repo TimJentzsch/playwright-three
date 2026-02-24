@@ -11,7 +11,9 @@
  * @returns {ObjectGenerator} A generator that yields the given object only.
  */
 function* single(object) {
-  yield object;
+  if (object) {
+    yield object;
+  }
 }
 
 /**
