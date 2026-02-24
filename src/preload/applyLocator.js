@@ -1,3 +1,14 @@
+// @ts-check
+
+/**
+ * @import { Scene } from "three";
+ */
+
+/**
+ * @typedef {object} PlaywrightThree
+ * @property {Scene} [scene]
+ */
+
 /**
  * @typedef {object} LocatorData
  * @property {LocatorData} [context] the objects in which to search.
@@ -53,7 +64,9 @@ function applyLocator(data) {
  * @returns {ObjectGenerator}
  */
 function getScene() {
-  return single(globalThis.PLAYWRIGHT_THREE?.scene);
+  return single(
+    /** @type {{ PLAYWRIGHT_THREE?: PlaywrightThree }} */ (globalThis).PLAYWRIGHT_THREE?.scene,
+  );
 }
 
 globalThis.applyLocator = applyLocator;

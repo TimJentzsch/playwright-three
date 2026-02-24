@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @import { Color, Material, Vector3Tuple } from "three";
  */
@@ -47,8 +49,11 @@ function getObjectData(request) {
       response.position = worldPos.toArray();
     }
 
-    if (request.material && obj.material) {
-      response.material = getMaterialData(request.material)(obj.material);
+    // @ts-ignore existence will be checked for
+    const material = obj.material;
+
+    if (request.material && material) {
+      response.material = getMaterialData(request.material)(material);
     }
 
     return response;

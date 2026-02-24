@@ -8,7 +8,7 @@ import {
 } from "@playwright/test";
 import { Scene } from "./scene";
 
-const initScripts = ["applyLocator", "dataConfig", "objectGenerators"];
+const initScripts = ["applyLocator", "objectData", "objectGenerators"];
 
 type ThreeTestFixtures = {
   scene: Scene;

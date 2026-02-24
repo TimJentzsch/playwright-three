@@ -7,8 +7,9 @@
 /** @typedef {Generator<Object3D>} ObjectGenerator */
 
 /**
- * @param {Object3D} object The object to generate
+ * @param {Object3D | undefined} object The object to generate
  * @returns {ObjectGenerator} A generator that yields the given object only.
+ *  Does not yield anything if no object is provided.
  */
 function* single(object) {
   if (object) {
