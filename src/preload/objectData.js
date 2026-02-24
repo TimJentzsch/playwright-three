@@ -15,25 +15,25 @@
  */
 
 /**
- * @typedef {object} ObjectDataResponse
- * @property {MaterialDataResponse} [material] the requested material data.
+ * @typedef {object} ObjectData
+ * @property {MaterialData} [material] the requested material data.
  * @property {boolean} [isVisible] whether the object is visible in the scene.
  * @property {Vector3Tuple} [position] the global position of the object.
  */
 
 /**
- * @typedef {object} MaterialDataResponse
+ * @typedef {object} MaterialData
  * @property {Color} [color] the color configured in the material.
  */
 
 /**
  *
  * @param {ObjectDataRequest} request the data that has been requested about the object.
- * @returns {(obj: Object3D) => ObjectDataResponse} a function to return the requested data for an object.
+ * @returns {(obj: Object3D) => ObjectData} a function to return the requested data for an object.
  */
 function getObjectData(request) {
   return (obj) => {
-    /** @type {ObjectDataResponse} */
+    /** @type {ObjectData} */
     const response = {};
 
     if (request.isVisible) {
@@ -58,11 +58,11 @@ function getObjectData(request) {
 /**
  *
  * @param {MaterialDataRequest} request the data that has been requested about the material.
- * @returns {(material: any) => MaterialDataResponse} a function to return the requested data for an object.
+ * @returns {(material: any) => MaterialData} a function to return the requested data for an object.
  */
 function getMaterialData(request) {
   return (material) => {
-    /** @type {MaterialDataResponse} */
+    /** @type {MaterialData} */
     const response = {};
 
     if (request.color) {

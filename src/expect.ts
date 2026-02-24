@@ -208,7 +208,7 @@ export const expect: Expect<{
 async function waitForLocator(
   locator: ThreeLocator,
   objDataRequest: ObjectDataRequest,
-  condition: (allObjData: ObjectDataResponse[]) => MatcherReturnType,
+  condition: (allObjData: ObjectData[]) => MatcherReturnType,
   { timeout = 5_000 }: CommonOptions = {},
 ): Promise<MatcherReturnType> {
   let curResult = {
@@ -255,7 +255,7 @@ async function waitForLocator(
 async function waitForLocatorSingle(
   locator: ThreeLocator,
   objDataRequest: ObjectDataRequest,
-  condition: (objData: ObjectDataResponse) => MatcherReturnType,
+  condition: (objData: ObjectData) => MatcherReturnType,
   options: CommonOptions = {},
 ): Promise<MatcherReturnType> {
   return await waitForLocator(
