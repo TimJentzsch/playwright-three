@@ -1,12 +1,14 @@
-export type LocatorOptions = {
-  /** The maximum depth to search at. */
-  maxDepth?: number;
-};
+/**
+ * @import { LocatorFilter, LocatorOptions } from "./preload/applyLocator";
+ */
 
 /**
  * The common interface for locating 3D objects in the scene.
  */
 export interface ObjectLocatorApi {
+  _filter: LocatorFilter;
+  _options: LocatorOptions;
+
   /**
    * @param name The name of the object to locate.
    *  Note that object names need to be explicitly set and must not be unique.
