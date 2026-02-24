@@ -1,25 +1,20 @@
-import { JSHandle } from "@playwright/test";
-import { LocatorOptions, ObjectLocatorApi } from "./locatorApi";
+import { Page } from "@playwright/test";
+import { ObjectLocatorApi } from "./locatorApi";
 import { LocatorContext } from "./locatorContext";
 
 /**
  * @import { ObjectGenerator } from "./preload/objectGenerators";
+ * @import { LocatorFilter, LocatorOptions } from "./preload/applyLocator";
  */
-
-export type LocatorFilter = {
-  name?: string;
-  type?: string;
-  userData?: Record<string, unknown>;
-};
 
 export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
   ctx: LocatorContext;
-  #filter: LocatorFilter = {};
-  #options: LocatorOptions = {};
+  _filter: LocatorFilter = {};
+  _options: LocatorOptions = {};
 
   constructor(ctx: LocatorContext, options: LocatorOptions = {}) {
     this.ctx = ctx;
-    this.#options = options;
+    this._options = options;
   }
 
   /**
@@ -27,8 +22,8 @@ export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
    * @returns The locator for chaining
    */
   filter(filter: LocatorFilter): ThreeLocator {
-    this.#filter = {
-      ...this.#filter,
+    this._filter = {
+      ...this._filter,
       ...filter,
     };
 
@@ -52,40 +47,15 @@ export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
     });
   }
 
-  async roots(): Promise<JSHandle<ObjectGenerator>> {
-    return this.evaluate();
+  _locatorData(): LocatorData {
+    return {
+      context: this.ctx._locatorData(),
+      filter: this._filter,
+      options: this._options,
+    };
   }
 
-  async evaluate(): Promise<JSHandle<ObjectGenerator>> {
-    const rootsHandle = await this.ctx.roots();
-
-    return rootsHandle.evaluateHandle(
-      (roots, { filter, options }) =>
-        filtered(traverseAll(roots, options.maxDepth ?? Infinity), (obj) => {
-          const { name, type, userData } = filter;
-
-          if (name !== undefined && obj.name !== name) {
-            return false;
-          }
-
-          if (type !== undefined && obj.type !== type) {
-            return false;
-          }
-
-          if (userData !== undefined) {
-            for (const [key, value] of Object.entries(userData)) {
-              if (obj.userData[key] !== value) {
-                return false;
-              }
-            }
-          }
-
-          return true;
-        }),
-      {
-        filter: this.#filter,
-        options: this.#options,
-      },
-    );
+  _page(): Page {
+    return this.ctx._page();
   }
 }

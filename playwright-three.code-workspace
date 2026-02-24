@@ -12,5 +12,8 @@
   },
   "settings": {
     "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.tabSize": 2,
+    // Use oxc instead of prettier
+    "prettier.enable": false,
   },
 }
