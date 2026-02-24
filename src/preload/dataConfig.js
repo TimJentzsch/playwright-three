@@ -41,7 +41,10 @@ function getObjectData(request) {
     }
 
     if (request.position) {
-      response.position = obj.getWorldPosition().toArray();
+      // HACK: Can't construct a Vector3 directly, because three JS can't be imported in this file
+      const worldPos = obj.position.clone();
+      obj.getWorldPosition(worldPos);
+      response.position = worldPos.toArray();
     }
 
     if (request.material && obj.material) {
@@ -64,7 +67,7 @@ function getMaterialData(request) {
 
     if (request.color) {
       const color = material.color;
-      if (color && color instanceof Color) {
+      if (color && color.isColor) {
         response.color = color;
       }
     }
