@@ -8,7 +8,7 @@ import {
 } from "@playwright/test";
 import { Scene } from "./scene";
 
-const objectGeneratorsPath = new URL("./preload/objectGenerators.js", import.meta.url).pathname;
+const initScripts = ["applyLocator", "dataConfig", "objectGenerators"];
 
 type ThreeTestFixtures = {
   scene: Scene;
@@ -22,9 +22,14 @@ export const test: TestType<
 > = base.extend<ThreeTestFixtures>({
   autoLoadSceneScripts: [
     async ({ page }, use) => {
-      await page.addInitScript({
-        path: objectGeneratorsPath,
-      });
+      await Promise.all(
+        initScripts.map(async (scriptName) => {
+          const path = new URL(`./preload/${scriptName}.js`, import.meta.url).pathname;
+          return await page.addInitScript({
+            path,
+          });
+        }),
+      );
 
       use("autoLoadSceneScripts");
     },

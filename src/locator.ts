@@ -1,3 +1,4 @@
+import { Page } from "@playwright/test";
 import { ObjectLocatorApi } from "./locatorApi";
 import { LocatorContext } from "./locatorContext";
 
@@ -52,5 +53,9 @@ export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
       filter: this._filter,
       options: this._options,
     };
+  }
+
+  _page(): Page {
+    return this.ctx._page();
   }
 }

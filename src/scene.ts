@@ -34,4 +34,8 @@ export class Scene implements ObjectLocatorApi, LocatorContext {
   _locatorData(): undefined {
     return undefined;
   }
+
+  _page(): Page {
+    return this.page;
+  }
 }

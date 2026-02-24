@@ -6,7 +6,7 @@ import {
   MatcherReturnType,
 } from "@playwright/test";
 import { ThreeLocator } from "./locator";
-import { Color, Mesh, Object3D, Vector3 } from "three";
+import { Color, Vector3 } from "three";
 import ColorJs from "colorjs.io";
 
 const PRECISION = 0.001;
@@ -68,10 +68,13 @@ export const expect: Expect<{
   ): Promise<MatcherReturnType>;
 }> = baseExpect.extend({
   async toBeVisibleInScene(locator, options = {}): Promise<MatcherReturnType> {
-    return waitForObject(
+    return waitForLocatorSingle(
       locator,
-      (object) => {
-        if (object.visible) {
+      {
+        isVisible: true,
+      },
+      ({ isVisible }) => {
+        if (isVisible) {
           return {
             pass: true,
             message: () => `Expected object to not be visible, but it is.`,
@@ -92,23 +95,31 @@ export const expect: Expect<{
     expected,
     { precision = PRECISION } = {},
   ): Promise<MatcherReturnType> {
-    return waitForObject(locator, (object) => {
-      const position = object.position;
+    return waitForLocatorSingle(
+      locator,
+      {
+        position: true,
+      },
+      ({ position: positionArray }) => {
+        if (!positionArray) throw new Error("unreachable: requested position data not provided");
 
-      if (expected.distanceTo(object.position) > precision) {
-        return {
-          pass: false,
-          expected,
-          actual: position,
-          message: () => `Position doesn't match the expected one.`,
-        };
-      } else {
-        return {
-          pass: true,
-          message: () => `Position matches the provided one, even though it should not.`,
-        };
-      }
-    });
+        const position = new Vector3().fromArray(positionArray);
+
+        if (expected.distanceTo(position) > precision) {
+          return {
+            pass: false,
+            expected,
+            actual: positionArray,
+            message: () => `Position doesn't match the expected one.`,
+          };
+        } else {
+          return {
+            pass: true,
+            message: () => `Position matches the provided one, even though it should not.`,
+          };
+        }
+      },
+    );
   },
 
   async toHaveColor(
@@ -116,40 +127,20 @@ export const expect: Expect<{
     expected,
     { precision = 1, timeout } = {},
   ): Promise<MatcherReturnType> {
-    return waitForObject(
+    return waitForLocatorSingle(
       locator,
-      (object) => {
-        if (!isMesh(object)) {
-          console.debug([object]);
-          console.debug(object);
+      {
+        material: {
+          color: true,
+        },
+      },
+      (objData) => {
+        const color = objData.material?.color;
+
+        if (color === undefined) {
           return {
             pass: false,
-            message: () => `Object doesn't have a material.`,
-          };
-        }
-
-        const material = object.material;
-
-        if (Array.isArray(material)) {
-          return {
-            pass: false,
-            message: () => `Object has multiple materials, which is not supported.`,
-          };
-        }
-
-        const color = (material as any).color;
-
-        if (color === undefined || color === null) {
-          return {
-            pass: false,
-            message: () => `Material doesn't have a color.`,
-          };
-        }
-
-        if (!isColor(color)) {
-          return {
-            pass: false,
-            message: () => `Material color is not a Color instance.`,
+            message: () => `Object doesn't have a valid material color.`,
           };
         }
 
@@ -171,14 +162,14 @@ export const expect: Expect<{
           return {
             pass: false,
             expected: expectedColor,
-            actual: actualColor,
+            actual: color,
             message: () => `The colors are visually different (ΔE = ${deltaE} > ${precision}).`,
           };
         }
 
         return {
           pass: true,
-          actual: actualColor,
+          actual: color,
           expected: expectedColor,
           message: () => `The colors are visually similar (ΔE = ${deltaE} ≤ ${precision}).`,
         };
@@ -188,10 +179,12 @@ export const expect: Expect<{
   },
 
   async toHaveCountInScene(locator, expectedCount, options = {}): Promise<MatcherReturnType> {
-    return waitForObjects(
+    return waitForLocator(
       locator,
-      (objects) => {
-        const actualCount = objects.length;
+      // No data needed, just the count
+      {},
+      (allObjectData) => {
+        const actualCount = allObjectData.length;
 
         if (actualCount === expectedCount) {
           return {
@@ -212,9 +205,10 @@ export const expect: Expect<{
   },
 });
 
-async function waitForObjects(
+async function waitForLocator(
   locator: ThreeLocator,
-  condition: (objects: Object3D[]) => MatcherReturnType,
+  objDataRequest: ObjectDataRequest,
+  condition: (allObjData: ObjectDataResponse[]) => MatcherReturnType,
   { timeout = 5_000 }: CommonOptions = {},
 ): Promise<MatcherReturnType> {
   let curResult = {
@@ -226,8 +220,19 @@ async function waitForObjects(
     sleep(timeout).then(() => curResult),
 
     repeatUntil(
-      async () => (await locator.evaluate()).evaluate((objects) => [...objects]),
-      (objects) => condition(objects),
+      async () =>
+        await locator._page().evaluate((locatorData) => {
+          const objects = applyLocator(locatorData);
+
+          const objData = [];
+
+          for (const obj of objects) {
+            objData.push(getObjectData(objDataRequest)(obj));
+          }
+
+          return objData;
+        }, locator._locatorData()),
+      (objData) => condition(objData),
       (matcherReturn) => {
         curResult = matcherReturn;
       },
@@ -241,49 +246,34 @@ async function waitForObjects(
   ]);
 }
 
-async function waitForObject(
+async function waitForLocatorSingle(
   locator: ThreeLocator,
-  condition: (object: Object3D) => MatcherReturnType,
-  { timeout = 5_000 }: CommonOptions = {},
+  objDataRequest: ObjectDataRequest,
+  condition: (objData: ObjectDataResponse) => MatcherReturnType,
+  options: CommonOptions = {},
 ): Promise<MatcherReturnType> {
-  let curResult = {
-    pass: false,
-    message: () => "No objects match locator",
-  };
+  return await waitForLocator(
+    locator,
+    objDataRequest,
+    (allObjData) => {
+      const objectCount = allObjData.length;
 
-  return Promise.race([
-    sleep(timeout).then(() => curResult),
-
-    repeatUntil(
-      async () => (await locator.evaluate()).evaluate((objects) => [...objects]),
-      (objects) => {
-        const objectCount = objects.length;
-
-        if (objectCount === 1) {
-          return condition(objects[0]);
-        } else if (objectCount === 0) {
-          return {
-            pass: false,
-            message: () => "No objects match locator",
-          };
-        } else {
-          return {
-            pass: false,
-            message: () => `${objectCount} match locator, but expected exactly one`,
-          };
-        }
-      },
-      (matcherReturn) => {
-        curResult = matcherReturn;
-      },
-      250,
-    )
-      .then(() => curResult)
-      .catch((error: unknown) => ({
-        pass: false,
-        message: () => String(error),
-      })),
-  ]);
+      if (objectCount === 1) {
+        return condition(allObjData[0]);
+      } else if (objectCount === 0) {
+        return {
+          pass: false,
+          message: () => "No objects match locator",
+        };
+      } else {
+        return {
+          pass: false,
+          message: () => `${objectCount} match locator, but expected exactly one`,
+        };
+      }
+    },
+    options,
+  );
 }
 
 async function sleep(duration: number): Promise<void> {
@@ -304,12 +294,4 @@ async function repeatUntil<T>(
 
     await sleep(delay);
   }
-}
-
-function isMesh(object: Object3D): object is Mesh {
-  return (object as any).isMesh === true;
-}
-
-function isColor(object: any): object is Color {
-  return (object as any).isColor === true;
 }
