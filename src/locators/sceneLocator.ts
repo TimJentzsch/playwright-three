@@ -1,8 +1,8 @@
 import type { JSHandle, Page } from "@playwright/test";
 import type { RootState } from "@react-three/fiber";
 import { ObjectLocator } from "./objectLocator";
-import { ObjectLocatorApi } from "./locatorApi";
-import { ObjectLocatorContext } from "./locatorContext";
+import { ObjectLocatorApi } from "./objectLocatorApi";
+import { ObjectLocatorContext } from "./objectLocatorContext";
 
 export class SceneLocator implements ObjectLocatorApi, ObjectLocatorContext {
   page: Page;

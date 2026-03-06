@@ -1,6 +1,6 @@
 import { Page } from "@playwright/test";
-import { ObjectLocatorApi } from "./locatorApi";
-import { ObjectLocatorContext } from "./locatorContext";
+import { ObjectLocatorApi } from "./objectLocatorApi";
+import { ObjectLocatorContext } from "./objectLocatorContext";
 import { MaterialLocator } from "./materialLocator";
 import { GeometryLocator } from "./geometryLocator";
 

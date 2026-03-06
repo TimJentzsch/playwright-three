@@ -1,5 +1,5 @@
 import { JSHandle, Page } from "@playwright/test";
-import { ObjectLocatorContext } from "./locatorContext";
+import { ObjectLocatorContext } from "./objectLocatorContext";
 import { Material } from "three";
 
 export class MaterialLocator {
