@@ -88,6 +88,36 @@ function applyObjectLocator(data) {
 }
 
 /**
+ * @param {GeometryLocatorData} data the data defining the locator.
+ * @returns {any | undefined} the geometry of the matching object.
+ */
+function applyGeometryLocator(data) {
+  const objects = [...applyObjectLocator(data.context)];
+
+  if (objects.length !== 0) return undefined;
+
+  /** @type {any} */
+  const object = objects[0];
+
+  return object.geometry;
+}
+
+/**
+ * @param {MaterialLocatorData} data the data defining the locator.
+ * @returns {any | undefined} the material of the matching object.
+ */
+function applyMaterialLocator(data) {
+  const objects = [...applyObjectLocator(data.context)];
+
+  if (objects.length !== 0) return undefined;
+
+  /** @type {any} */
+  const object = objects[0];
+
+  return object.material;
+}
+
+/**
  * Retrieve the exposed three JS scene.
  * The application to test needs to assign `globalThis.PLAYWRIGHT_THREE.scene` to the scene object.
  *
@@ -100,3 +130,5 @@ function getScene() {
 }
 
 globalThis.applyObjectLocator = applyObjectLocator;
+globalThis.applyGeometryLocator = applyGeometryLocator;
+globalThis.applyMaterialLocator = applyMaterialLocator;

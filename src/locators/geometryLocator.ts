@@ -1,5 +1,6 @@
-import { Page } from "@playwright/test";
+import { JSHandle, Page } from "@playwright/test";
 import { ObjectLocatorContext } from "./locatorContext";
+import { BufferGeometry } from "three";
 
 export class GeometryLocator {
   ctx: ObjectLocatorContext;
@@ -8,7 +9,21 @@ export class GeometryLocator {
     this.ctx = ctx;
   }
 
-  _locatorData(): LocatorData {
+  async handle<Geometry = BufferGeometry>(): Promise<JSHandle<Geometry | undefined>> {
+    return await this._page().evaluateHandle<
+      Geometry | undefined,
+      { locatorData: GeometryLocatorData }
+    >(
+      ({ locatorData }) => {
+        return applyGeometryLocator(locatorData);
+      },
+      {
+        locatorData: this._locatorData(),
+      },
+    );
+  }
+
+  _locatorData(): GeometryLocatorData {
     return {
       type: "geometry",
       context: this.ctx._locatorData(),

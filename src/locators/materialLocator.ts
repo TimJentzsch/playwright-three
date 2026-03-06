@@ -1,5 +1,6 @@
-import { Page } from "@playwright/test";
+import { JSHandle, Page } from "@playwright/test";
 import { ObjectLocatorContext } from "./locatorContext";
+import { Material } from "three";
 
 export class MaterialLocator {
   ctx: ObjectLocatorContext;
@@ -8,7 +9,18 @@ export class MaterialLocator {
     this.ctx = ctx;
   }
 
-  _locatorData(): LocatorData {
+  async handle<Mat = Material>(): Promise<JSHandle<Mat | undefined>> {
+    return await this._page().evaluateHandle<Mat | undefined, { locatorData: MaterialLocatorData }>(
+      ({ locatorData }) => {
+        return applyMaterialLocator(locatorData);
+      },
+      {
+        locatorData: this._locatorData(),
+      },
+    );
+  }
+
+  _locatorData(): MaterialLocatorData {
     return {
       type: "material",
       context: this.ctx._locatorData(),
