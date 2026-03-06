@@ -1,6 +1,8 @@
 import { Page } from "@playwright/test";
 import { ObjectLocatorApi } from "./locatorApi";
 import { ObjectLocatorContext } from "./locatorContext";
+import { MaterialLocator } from "./materialLocator";
+import { GeometryLocator } from "./geometryLocator";
 
 /**
  * @import { ObjectGenerator } from "./preload/objectGenerators";
@@ -45,6 +47,16 @@ export class ObjectLocator implements ObjectLocatorApi, ObjectLocatorContext {
     return new ObjectLocator(this, options).filter({
       userData: { [key]: value },
     });
+  }
+
+  /** Access the material of the object. */
+  material(): MaterialLocator {
+    return new MaterialLocator(this);
+  }
+
+  /** Access the geometry of the object. */
+  geometry(): GeometryLocator {
+    return new GeometryLocator(this);
   }
 
   _locatorData(): ObjectLocatorData {

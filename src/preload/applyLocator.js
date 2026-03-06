@@ -10,7 +10,7 @@
  */
 
 /**
- * @typedef {ObjectLocatorData | MaterialLocatorData} LocatorData
+ * @typedef {ObjectLocatorData | MaterialLocatorData | GeometryLocatorData} LocatorData
  */
 
 /**
@@ -35,7 +35,13 @@
 /**
  * @typedef {object} MaterialLocatorData
  * @property {"material"} type the type to locate.
- * @property {ObjectLocatorData | SceneLocatorData} context the objects to take the material from.
+ * @property {ObjectLocatorData} context the objects to take the material from.
+ */
+
+/**
+ * @typedef {object} GeometryLocatorData
+ * @property {"geometry"} type the type to locate.
+ * @property {ObjectLocatorData} context the objects to take the material from.
  */
 
 /**
