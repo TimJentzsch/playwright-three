@@ -10,10 +10,32 @@
  */
 
 /**
- * @typedef {object} LocatorData
- * @property {LocatorData} [context] the objects in which to search.
+ * @typedef {ObjectLocatorData | MaterialLocatorData} LocatorData
+ */
+
+/**
+ * @typedef {SceneLocatorData | GenericObjectLocator} ObjectLocatorData
+ */
+
+/**
+ * @typedef {object} SceneLocatorData
+ * @property {"object"} type the type to locate.
+ * @property {"scene"} objectType
+ */
+
+/**
+ * @typedef {object} GenericObjectLocator
+ * @property {"object"} type the type to locate.
+ * @property {"generic"} objectType
+ * @property {ObjectLocatorData} context the objects in which to search.
  * @property {LocatorFilter} filter the filter to apply to the objects.
  * @property {LocatorOptions} options the options to use for filtering.
+ */
+
+/**
+ * @typedef {object} MaterialLocatorData
+ * @property {"material"} type the type to locate.
+ * @property {ObjectLocatorData | SceneLocatorData} context the objects to take the material from.
  */
 
 /**
@@ -29,11 +51,13 @@
  */
 
 /**
- * @param {LocatorData} data the data defining the locator.
+ * @param {ObjectLocatorData} data the data defining the locator.
  * @returns {ObjectGenerator} a generator over all matching objects.
  */
-function applyLocator(data) {
-  const roots = data.context ? applyLocator(data.context) : getScene();
+function applyObjectLocator(data) {
+  if (data.objectType === "scene") return getScene();
+
+  const roots = applyObjectLocator(data.context);
   const { name, type, userData } = data.filter;
 
   return filtered(traverseAll(roots, data.options.maxDepth ?? Infinity), (obj) => {
@@ -69,4 +93,4 @@ function getScene() {
   );
 }
 
-globalThis.applyLocator = applyLocator;
+globalThis.applyObjectLocator = applyObjectLocator;

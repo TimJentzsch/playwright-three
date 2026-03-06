@@ -4,8 +4,8 @@
 
 import { Page } from "@playwright/test";
 
-export interface LocatorContext {
-  _locatorData(): LocatorData | undefined;
+export interface ObjectLocatorContext {
+  _locatorData(): ObjectLocatorData;
 
   _page(): Page;
 }

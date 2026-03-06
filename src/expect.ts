@@ -223,7 +223,7 @@ async function waitForLocator(
       async () =>
         await locator._page().evaluate(
           ({ locatorData, objDataRequest }) => {
-            const objects = applyLocator(locatorData);
+            const objects = applyObjectLocator(locatorData);
 
             const objData = [];
 

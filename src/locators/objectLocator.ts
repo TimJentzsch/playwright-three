@@ -1,18 +1,18 @@
 import { Page } from "@playwright/test";
 import { ObjectLocatorApi } from "./locatorApi";
-import { LocatorContext } from "./locatorContext";
+import { ObjectLocatorContext } from "./locatorContext";
 
 /**
  * @import { ObjectGenerator } from "./preload/objectGenerators";
  * @import { LocatorFilter, LocatorOptions } from "./preload/applyLocator";
  */
 
-export class ObjectLocator implements ObjectLocatorApi, LocatorContext {
-  ctx: LocatorContext;
+export class ObjectLocator implements ObjectLocatorApi, ObjectLocatorContext {
+  ctx: ObjectLocatorContext;
   _filter: LocatorFilter = {};
   _options: LocatorOptions = {};
 
-  constructor(ctx: LocatorContext, options: LocatorOptions = {}) {
+  constructor(ctx: ObjectLocatorContext, options: LocatorOptions = {}) {
     this.ctx = ctx;
     this._options = options;
   }
@@ -47,8 +47,10 @@ export class ObjectLocator implements ObjectLocatorApi, LocatorContext {
     });
   }
 
-  _locatorData(): LocatorData {
+  _locatorData(): ObjectLocatorData {
     return {
+      type: "object",
+      objectType: "generic",
       context: this.ctx._locatorData(),
       filter: this._filter,
       options: this._options,

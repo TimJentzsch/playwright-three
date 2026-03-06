@@ -2,9 +2,9 @@ import type { JSHandle, Page } from "@playwright/test";
 import type { RootState } from "@react-three/fiber";
 import { ObjectLocator } from "./objectLocator";
 import { ObjectLocatorApi } from "./locatorApi";
-import { LocatorContext } from "./locatorContext";
+import { ObjectLocatorContext } from "./locatorContext";
 
-export class SceneLocator implements ObjectLocatorApi, LocatorContext {
+export class SceneLocator implements ObjectLocatorApi, ObjectLocatorContext {
   page: Page;
   threeHandle: JSHandle<RootState> | undefined;
   _filter: LocatorFilter = {};
@@ -31,8 +31,11 @@ export class SceneLocator implements ObjectLocatorApi, LocatorContext {
     });
   }
 
-  _locatorData(): undefined {
-    return undefined;
+  _locatorData(): SceneLocatorData {
+    return {
+      type: "object",
+      objectType: "scene",
+    };
   }
 
   _page(): Page {
