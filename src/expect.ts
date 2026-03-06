@@ -5,7 +5,7 @@ import {
   ExpectMatcherState,
   MatcherReturnType,
 } from "@playwright/test";
-import { ThreeLocator } from "./locator";
+import { ObjectLocator } from "./locators/objectLocator";
 import { Color, Vector3 } from "three";
 import ColorJs from "colorjs.io";
 
@@ -23,7 +23,7 @@ export const expect: Expect<{
   toBeVisibleInScene(
     this: ExpectMatcherState,
     /** The locator, must match a single object. */
-    locator: ThreeLocator,
+    locator: ObjectLocator,
     options?: CommonOptions,
   ): Promise<MatcherReturnType>;
 
@@ -33,7 +33,7 @@ export const expect: Expect<{
   toHavePosition(
     this: ExpectMatcherState,
     /** The locator, must match a single object. */
-    locator: ThreeLocator,
+    locator: ObjectLocator,
     /** The expected position of the object. */
     expected: Vector3,
     options?: CommonOptions & {
@@ -48,7 +48,7 @@ export const expect: Expect<{
   toHaveColor(
     this: ExpectMatcherState,
     /** The locator, must match a single object. */
-    locator: ThreeLocator,
+    locator: ObjectLocator,
     /** The expected color value. */
     expected: string | Color,
     options?: CommonOptions & {
@@ -61,7 +61,7 @@ export const expect: Expect<{
   toHaveCountInScene(
     this: ExpectMatcherState,
     /** The locator for the objects to count. */
-    locator: ThreeLocator,
+    locator: ObjectLocator,
     /** The expected number of objects that the locator must match. */
     expectedCount: number,
     options?: CommonOptions,
@@ -206,7 +206,7 @@ export const expect: Expect<{
 });
 
 async function waitForLocator(
-  locator: ThreeLocator,
+  locator: ObjectLocator,
   objDataRequest: ObjectDataRequest,
   condition: (allObjData: ObjectData[]) => MatcherReturnType,
   { timeout = 5_000 }: CommonOptions = {},
@@ -253,7 +253,7 @@ async function waitForLocator(
 }
 
 async function waitForLocatorSingle(
-  locator: ThreeLocator,
+  locator: ObjectLocator,
   objDataRequest: ObjectDataRequest,
   condition: (objData: ObjectData) => MatcherReturnType,
   options: CommonOptions = {},

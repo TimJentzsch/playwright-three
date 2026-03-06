@@ -1,10 +1,10 @@
 import type { JSHandle, Page } from "@playwright/test";
 import type { RootState } from "@react-three/fiber";
-import { ThreeLocator } from "./locator";
+import { ObjectLocator } from "./objectLocator";
 import { ObjectLocatorApi } from "./locatorApi";
 import { LocatorContext } from "./locatorContext";
 
-export class Scene implements ObjectLocatorApi, LocatorContext {
+export class SceneLocator implements ObjectLocatorApi, LocatorContext {
   page: Page;
   threeHandle: JSHandle<RootState> | undefined;
   _filter: LocatorFilter = {};
@@ -15,18 +15,18 @@ export class Scene implements ObjectLocatorApi, LocatorContext {
   }
 
   /** @inheritdoc */
-  getByName(name: string, options?: LocatorOptions): ThreeLocator {
-    return new ThreeLocator(this, options).filter({ name });
+  getByName(name: string, options?: LocatorOptions): ObjectLocator {
+    return new ObjectLocator(this, options).filter({ name });
   }
 
   /** @inheritdoc */
-  getByType(type: string, options?: LocatorOptions): ThreeLocator {
-    return new ThreeLocator(this, options).filter({ type });
+  getByType(type: string, options?: LocatorOptions): ObjectLocator {
+    return new ObjectLocator(this, options).filter({ type });
   }
 
   /** @inheritdoc */
-  getByUserData<T>(key: string, value: T, options?: LocatorOptions): ThreeLocator {
-    return new ThreeLocator(this, options).filter({
+  getByUserData<T>(key: string, value: T, options?: LocatorOptions): ObjectLocator {
+    return new ObjectLocator(this, options).filter({
       userData: { [key]: value },
     });
   }

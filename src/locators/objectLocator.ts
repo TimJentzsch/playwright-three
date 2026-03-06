@@ -7,7 +7,7 @@ import { LocatorContext } from "./locatorContext";
  * @import { LocatorFilter, LocatorOptions } from "./preload/applyLocator";
  */
 
-export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
+export class ObjectLocator implements ObjectLocatorApi, LocatorContext {
   ctx: LocatorContext;
   _filter: LocatorFilter = {};
   _options: LocatorOptions = {};
@@ -21,7 +21,7 @@ export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
    * @param filter Filter the objects by the conditions.
    * @returns The locator for chaining
    */
-  filter(filter: LocatorFilter): ThreeLocator {
+  filter(filter: LocatorFilter): ObjectLocator {
     this._filter = {
       ...this._filter,
       ...filter,
@@ -31,18 +31,18 @@ export class ThreeLocator implements ObjectLocatorApi, LocatorContext {
   }
 
   /** @inheritdoc */
-  getByName(name: string, options?: LocatorOptions): ThreeLocator {
-    return new ThreeLocator(this, options).filter({ name });
+  getByName(name: string, options?: LocatorOptions): ObjectLocator {
+    return new ObjectLocator(this, options).filter({ name });
   }
 
   /** @inheritdoc */
-  getByType(type: string, options?: LocatorOptions): ThreeLocator {
-    return new ThreeLocator(this, options).filter({ type });
+  getByType(type: string, options?: LocatorOptions): ObjectLocator {
+    return new ObjectLocator(this, options).filter({ type });
   }
 
   /** @inheritdoc */
-  getByUserData<T>(key: string, value: T, options?: LocatorOptions): ThreeLocator {
-    return new ThreeLocator(this, options).filter({
+  getByUserData<T>(key: string, value: T, options?: LocatorOptions): ObjectLocator {
+    return new ObjectLocator(this, options).filter({
       userData: { [key]: value },
     });
   }
