@@ -6,12 +6,12 @@ import {
   PlaywrightWorkerOptions,
   TestType,
 } from "@playwright/test";
-import { Scene } from "./scene";
+import { SceneLocator } from "./locators/sceneLocator";
 
 const initScripts = ["applyLocator", "objectData", "objectGenerators"];
 
 type ThreeTestFixtures = {
-  scene: Scene;
+  scene: SceneLocator;
 
   autoLoadSceneScripts: "autoLoadSceneScripts";
 };
@@ -37,7 +37,7 @@ export const test: TestType<
   ],
 
   scene: async ({ page }, use) => {
-    const scene = new Scene(page);
+    const scene = new SceneLocator(page);
     await use(scene);
   },
 });
