@@ -9,6 +9,7 @@ import { UserData } from "./scenes/UserData";
 import { Transform } from "./scenes/Transform";
 import { Color } from "./scenes/Color";
 import { LocatorOptions } from "./scenes/LocatorOptions";
+import { Handles } from "./scenes/Handles";
 
 export default function Scene() {
   return (
@@ -28,6 +29,7 @@ export default function Scene() {
           <Route path="userData" element={<UserData />} />
           <Route path="color" element={<Color />} />
           <Route path="locatorOptions" element={<LocatorOptions />} />
+          <Route path="handles" element={<Handles />} />
         </Routes>
       </BrowserRouter>
     </Canvas>

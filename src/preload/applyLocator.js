@@ -89,32 +89,28 @@ function applyObjectLocator(data) {
 
 /**
  * @param {GeometryLocatorData} data the data defining the locator.
- * @returns {any | undefined} the geometry of the matching object.
+ * @returns {Generator<any>} the geometry of the matching object.
  */
-function applyGeometryLocator(data) {
-  const objects = [...applyObjectLocator(data.context)];
-
-  if (objects.length !== 0) return undefined;
-
-  /** @type {any} */
-  const object = objects[0];
-
-  return object.geometry;
+function* applyGeometryLocator(data) {
+  for (const obj of applyObjectLocator(data.context)) {
+    // Not all objects have geometry, so casting is necessary to access it
+    /** @type {any} */
+    const object = obj;
+    yield object.geometry;
+  }
 }
 
 /**
  * @param {MaterialLocatorData} data the data defining the locator.
- * @returns {any | undefined} the material of the matching object.
+ * @returns {Generator<any>} the material of the matching object.
  */
-function applyMaterialLocator(data) {
-  const objects = [...applyObjectLocator(data.context)];
-
-  if (objects.length !== 0) return undefined;
-
-  /** @type {any} */
-  const object = objects[0];
-
-  return object.material;
+function* applyMaterialLocator(data) {
+  for (const obj of applyObjectLocator(data.context)) {
+    // Not all objects have a material, so casting is necessary to access it
+    /** @type {any} */
+    const object = obj;
+    yield object.material;
+  }
 }
 
 /**

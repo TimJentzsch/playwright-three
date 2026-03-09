@@ -1,8 +1,9 @@
-import { Page } from "@playwright/test";
+import { JSHandle, Page } from "@playwright/test";
 import { ObjectLocatorApi } from "./objectLocatorApi";
 import { ObjectLocatorContext } from "./objectLocatorContext";
 import { MaterialLocator } from "./materialLocator";
 import { GeometryLocator } from "./geometryLocator";
+import { Object3D } from "three";
 
 /**
  * @import { ObjectGenerator } from "./preload/objectGenerators";
@@ -57,6 +58,38 @@ export class ObjectLocator implements ObjectLocatorApi, ObjectLocatorContext {
   /** Access the geometry of the object. */
   geometry(): GeometryLocator {
     return new GeometryLocator(this);
+  }
+
+  /**
+   * @returns A handle to access the first object matching the locator.
+   */
+  async handle(): Promise<JSHandle<Object3D | undefined>> {
+    return await this._page().evaluateHandle<
+      Object3D | undefined,
+      { locatorData: ObjectLocatorData }
+    >(
+      ({ locatorData }) => {
+        const allObjects = [...applyObjectLocator(locatorData)];
+        return allObjects.at(0);
+      },
+      {
+        locatorData: this._locatorData(),
+      },
+    );
+  }
+
+  /**
+   * @returns A handle to access all objects matching the locator.
+   */
+  async handleAll(): Promise<JSHandle<Object3D[]>> {
+    return await this._page().evaluateHandle<Object3D[], { locatorData: ObjectLocatorData }>(
+      ({ locatorData }) => {
+        return [...applyObjectLocator(locatorData)];
+      },
+      {
+        locatorData: this._locatorData(),
+      },
+    );
   }
 
   _locatorData(): ObjectLocatorData {

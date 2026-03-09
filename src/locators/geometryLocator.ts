@@ -9,13 +9,31 @@ export class GeometryLocator {
     this.ctx = ctx;
   }
 
+  /**
+   * @returns A handle to access the material of the first object matching the locator.
+   */
   async handle<Geometry = BufferGeometry>(): Promise<JSHandle<Geometry | undefined>> {
     return await this._page().evaluateHandle<
       Geometry | undefined,
       { locatorData: GeometryLocatorData }
     >(
       ({ locatorData }) => {
-        return applyGeometryLocator(locatorData);
+        const allGeometry = [...applyGeometryLocator(locatorData)];
+        return allGeometry.at(0);
+      },
+      {
+        locatorData: this._locatorData(),
+      },
+    );
+  }
+
+  /**
+   * @returns A handle to access the materials of all objects matching the locator.
+   */
+  async handleAll<Geometry = BufferGeometry>(): Promise<JSHandle<Geometry[]>> {
+    return await this._page().evaluateHandle<Geometry[], { locatorData: GeometryLocatorData }>(
+      ({ locatorData }) => {
+        return [...applyGeometryLocator(locatorData)];
       },
       {
         locatorData: this._locatorData(),
