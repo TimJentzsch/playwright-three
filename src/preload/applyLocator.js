@@ -94,7 +94,7 @@ function applyObjectLocator(data) {
 function applyGeometryLocator(data) {
   const objects = [...applyObjectLocator(data.context)];
 
-  if (objects.length !== 0) return undefined;
+  if (objects.length !== 1) return undefined;
 
   /** @type {any} */
   const object = objects[0];
@@ -109,7 +109,7 @@ function applyGeometryLocator(data) {
 function applyMaterialLocator(data) {
   const objects = [...applyObjectLocator(data.context)];
 
-  if (objects.length !== 0) return undefined;
+  if (objects.length !== 1) return undefined;
 
   /** @type {any} */
   const object = objects[0];
