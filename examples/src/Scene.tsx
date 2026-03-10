@@ -10,6 +10,7 @@ import { Transform } from "./scenes/Transform";
 import { Color } from "./scenes/Color";
 import { LocatorOptions } from "./scenes/LocatorOptions";
 import { Handles } from "./scenes/Handles";
+import { Hierarchy } from "./scenes/Hierarchy";
 
 export default function Scene() {
   return (
@@ -30,6 +31,7 @@ export default function Scene() {
           <Route path="color" element={<Color />} />
           <Route path="locatorOptions" element={<LocatorOptions />} />
           <Route path="handles" element={<Handles />} />
+          <Route path="hierarchy" element={<Hierarchy />} />
         </Routes>
       </BrowserRouter>
     </Canvas>
