@@ -44,3 +44,11 @@ test("has 30 points", async ({ scene }) => {
 ```
 
 Similar to most Playwright matchers, the assertion will be retired until a timeout is reached, to improve test stability.
+
+## Contributing
+
+Please refer to the [contribution guide](./CONTRIBUTING.md).
+
+## License
+
+This project is licensed under the [Apache-2.0 license](./LICENSE).
