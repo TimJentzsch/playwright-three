@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+export const USER_DATA_ROUTE = "userData";
+
 export function UserData(): ReactNode {
   return (
     <>

@@ -1,5 +1,7 @@
 import type { JSX } from "react";
 
+export const HIERARCHY_ROUTE = "hierarchy";
+
 export function Hierarchy(): JSX.Element {
   return (
     <group name="1">

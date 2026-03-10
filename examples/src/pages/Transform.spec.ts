@@ -1,8 +1,9 @@
 import { test, expect } from "@timjen/playwright-three";
 import { Vector3 } from "three";
+import { TRANSFORM_ROUTE } from "./Transform";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("transform");
+  await page.goto(TRANSFORM_ROUTE);
 });
 
 test("matches position", async ({ scene }) => {

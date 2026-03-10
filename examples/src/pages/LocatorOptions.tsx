@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+export const LOCATOR_OPTIONS_ROUTE = "locatorOptions";
+
 export function LocatorOptions(): ReactNode {
   return (
     <group>

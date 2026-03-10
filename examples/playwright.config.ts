@@ -13,7 +13,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   /* Co-locating tests near their code to make it easier to find what they cover. */
-  testDir: "./src/scenes",
+  testDir: "./src/pages",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
