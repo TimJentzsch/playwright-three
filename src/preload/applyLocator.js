@@ -66,7 +66,7 @@ function applyObjectLocator(data) {
   const roots = applyObjectLocator(data.context);
   const { name, type, userData } = data.filter;
 
-  return filtered(traverseAll(roots, data.options.maxDepth ?? Infinity), (obj) => {
+  return filtered(traverseDescendants(roots, data.options.maxDepth ?? Infinity), (obj) => {
     if (name !== undefined && obj.name !== name) {
       return false;
     }
