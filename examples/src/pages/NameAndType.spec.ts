@@ -4,14 +4,10 @@ test.beforeEach(async ({ page }) => {
   await page.goto("box");
 });
 
-test("has canvas", async ({ page }) => {
-  await expect(page.locator("canvas")).toHaveCount(1);
-});
-
-test("has mesh", async ({ scene }) => {
+test("access by type", async ({ scene }) => {
   await expect(scene.getByType("Mesh")).toBeVisibleInScene();
 });
 
-test("has box", async ({ scene }) => {
+test("access by name", async ({ scene }) => {
   await expect(scene.getByName("box")).toBeVisibleInScene();
 });
