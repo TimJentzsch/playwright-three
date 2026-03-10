@@ -26,7 +26,9 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "e2e": "pnpm run --filter=examples e2e",
+    "e2e:ci": "pnpm run --filter=examples e2e:ci"
   },
   "peerDependencies": {
     "@playwright/test": "*",
