@@ -1,7 +1,8 @@
 import { test, expect } from "@timjen/playwright-three";
+import { COLOR_ROUTE } from "./Color";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("color");
+  await page.goto(COLOR_ROUTE);
 });
 
 test("red box is red", async ({ scene }) => {

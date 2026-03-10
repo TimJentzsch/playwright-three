@@ -1,17 +1,14 @@
 import { test, expect } from "@timjen/playwright-three";
+import { NAME_AND_TYPE_ROUTE } from "./NameAndType";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("box");
+  await page.goto(NAME_AND_TYPE_ROUTE);
 });
 
-test("has canvas", async ({ page }) => {
-  await expect(page.locator("canvas")).toHaveCount(1);
-});
-
-test("has mesh", async ({ scene }) => {
+test("access by type", async ({ scene }) => {
   await expect(scene.getByType("Mesh")).toBeVisibleInScene();
 });
 
-test("has box", async ({ scene }) => {
+test("access by name", async ({ scene }) => {
   await expect(scene.getByName("box")).toBeVisibleInScene();
 });

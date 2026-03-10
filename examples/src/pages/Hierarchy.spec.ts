@@ -1,7 +1,8 @@
 import { test, expect } from "@timjen/playwright-three";
+import { HIERARCHY_ROUTE } from "./Hierarchy";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("hierarchy");
+  await page.goto(HIERARCHY_ROUTE);
 });
 
 test("top level", async ({ scene }) => {

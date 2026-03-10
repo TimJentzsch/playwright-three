@@ -1,7 +1,8 @@
 import { test, expect } from "@timjen/playwright-three";
+import { LOCATOR_OPTIONS_ROUTE } from "./LocatorOptions";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("locatorOptions");
+  await page.goto(LOCATOR_OPTIONS_ROUTE);
 });
 
 test("has 0 boxes at depth 1", async ({ scene }) => {

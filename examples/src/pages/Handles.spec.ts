@@ -1,8 +1,9 @@
 import { test, expect } from "@timjen/playwright-three";
 import { BoxGeometry, MeshStandardMaterial } from "three";
+import { HANDLES_ROUTE } from "./Handles";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("handles");
+  await page.goto(HANDLES_ROUTE);
 });
 
 test("object handle", async ({ scene }) => {

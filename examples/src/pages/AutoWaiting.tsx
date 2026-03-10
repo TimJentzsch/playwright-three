@@ -4,7 +4,9 @@ import { Points } from "../objects/points";
 const MAX_POINTS = 10;
 const DELAY_MS = 100;
 
-export function LoadingPoints() {
+export const AUTO_WAITING_ROUTE = "autoWaiting";
+
+export function AutoWaiting() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {

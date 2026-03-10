@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+export const COLOR_ROUTE = "color";
+
 export function Color(): ReactNode {
   return (
     <>
