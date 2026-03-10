@@ -31,12 +31,23 @@ function* traverse(root, maxDepth) {
 
 /**
  * @param {Iterable<Object3D>} roots The objects to start traversing from, in order.
- * @param {number} maxDepth
+ * @param {number} maxDepth The maximum search depth.
  * @returns {ObjectGenerator} A generator doing a depth-first traversal of all given objects and their descendants.
  */
 function* traverseAll(roots, maxDepth) {
   for (const object of roots) {
     yield* traverse(object, maxDepth);
+  }
+}
+
+/**
+ * @param {Iterable<Object3D>} roots The objects to traverse the descendants of.
+ * @param {number} maxDepth The maximum search depth.
+ * @returns {ObjectGenerator} A generator doing a depth-first traversal of the descendants. The roots will not be included.
+ */
+function* traverseDescendants(roots, maxDepth) {
+  for (const object of roots) {
+    yield* traverseAll(object.children, maxDepth - 1);
   }
 }
 
@@ -56,4 +67,5 @@ function* filtered(generator, predicate) {
 globalThis.single = single;
 globalThis.traverse = traverse;
 globalThis.traverseAll = traverseAll;
+globalThis.traverseDescendants = traverseDescendants;
 globalThis.filtered = filtered;
