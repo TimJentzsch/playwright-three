@@ -26,7 +26,13 @@ Add the dev dependency to your project:
 npm add --save-dev @timjen/playwright-three
 ```
 
-You also need to expose the Three JS state on the `window` object to make it accessible from Playwright.
+You also need to expose the Three JS state of your app on the `window` object to make it accessible from Playwright:
+
+```ts
+window.PLAYWRIGHT_THREE.scene = // your Three JS scene
+```
+
+Check [`ExposeThree.tsx` in the examples](./examples/src/ExposeThree.tsx) for a reference of how to do it in [React](https://react.dev/) with [React Three Fiber](https://r3f.docs.pmnd.rs/).
 
 ## Usage
 
@@ -44,6 +50,11 @@ test("has 30 points", async ({ scene }) => {
 ```
 
 Similar to most Playwright matchers, the assertion will be retired until a timeout is reached, to improve test stability.
+
+## Examples
+
+The [examples](./examples/src/pages/) are currently the main source of documentation, showcasing the available locators and assertions.
+They also verify that the library is working as intended.
 
 ## Contributing
 
