@@ -1,11 +1,12 @@
 {
   "name": "@timjen/playwright-three",
   "version": "0.4.1",
-  "type": "module",
-  "main": "src/index.ts",
-  "publishConfig": {
-    "main": "dist/index.mjs",
-    "typings": "dist/index.d.mts"
+  "homepage": "https://github.com/TimJentzsch/playwright-three",
+  "license": "Apache-2.0",
+  "author": "Tim Jentzsch",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TimJentzsch/playwright-three.git"
   },
   "files": [
     "dist",
@@ -13,13 +14,12 @@
     "README.md",
     "LICENSE"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/TimJentzsch/playwright-three.git"
+  "type": "module",
+  "main": "src/index.ts",
+  "publishConfig": {
+    "main": "dist/index.mjs",
+    "typings": "dist/index.d.mts"
   },
-  "homepage": "https://github.com/TimJentzsch/playwright-three",
-  "author": "Tim Jentzsch",
-  "license": "Apache-2.0",
   "scripts": {
     "build": "tsdown",
     "prepare": "pnpm run build",
@@ -30,22 +30,22 @@
     "e2e": "pnpm run --filter=examples e2e",
     "e2e:ci": "pnpm run --filter=examples e2e:ci"
   },
-  "peerDependencies": {
-    "@playwright/test": "*",
-    "three": "*"
+  "dependencies": {
+    "colorjs.io": "^0.6.0"
   },
   "devDependencies": {
     "@playwright/test": "catalog:",
     "@react-three/fiber": "catalog:",
     "@types/three": "catalog:",
-    "oxfmt": "^0.15.0",
-    "oxlint": "^1.30.0",
+    "oxfmt": "0.37.0",
+    "oxlint": "1.52.0",
     "three": "catalog:",
     "tsdown": "^0.18.3",
     "typescript": "catalog:"
   },
-  "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a",
-  "dependencies": {
-    "colorjs.io": "^0.6.0"
-  }
+  "peerDependencies": {
+    "@playwright/test": "*",
+    "three": "*"
+  },
+  "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
 }
