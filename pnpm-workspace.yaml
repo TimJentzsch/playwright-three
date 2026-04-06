@@ -7,7 +7,7 @@ catalog:
   three: ^0.181.2
   "@react-three/fiber": ^9.4.0
   typescript: ~5.9.3
-  vite: ^7.2.4
+  vite: ^7.3.2
 
 ignoredBuiltDependencies:
   - esbuild
